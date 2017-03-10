@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block title %}UNITY 3D{% endblock %}
+{% block page_content %}
+    <div class="page-header">
+        {% if current_user.is_authenticated %}
+            <h3>Welcome,{{ current_user.username }}!</h3>
+        {% else %}
+            <h2>Welcome to Unity3D Cloud Factory.</h2>
+            <p>
+                <a href="{{ url_for('auth.register') }}">
+                Click here to register
+                </a>
+            </p>
+        {% endif %}
+    </div>
+    <table id="table"></table>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script src="{{ url_for('static', filename='bootstrap-table.js') }}"></script>
+	<script>
+    function myInterval(){
+        $.getJSON("/online-machines", { cmd: 'machine_info'},
+        function (data) { 
+            $('#table').bootstrapTable('load', data);
+         });
+    }
+
+    $(window).ready(function () {
+        setInterval("myInterval()", 2000);
+
+        $('#table').bootstrapTable({
+            url:'/online-machines?cmd=machine_info',
+            search:true,
+            showRefresh:true,
+            pagination:true,
+            pageNumber:1,
+            pageSize:10,
+            pageList: [10, 25, 50, 100],
+            columns: [
+            {
+                field: 'index',
+                title: 'index',
+                align: 'center',
+                halign: 'center',
+                formatter: function (value, row, index) {
+                    return index+1;
+                }
+            }, {
+                field: 'address',
+                title: 'address',
+                align: 'center',
+                halign: 'center'
+            }, {
+                field: 'type',
+                title: 'type',
+                align: 'center',
+                halign: 'center'
+            }, {
+                field: 'state',
+                title: 'state',
+                align: 'center',
+                halign: 'center'
+            }, {
+                field: 'task',
+                title: 'task',
+                align: 'center',
+                halign: 'center'
+            }, {
+                field: 'progress',
+                title: 'progress',
+                align: 'center',
+                halign: 'center'
+            }, {
+                field: 'temperature',
+                title: 'temperature',
+                align: 'center',
+                halign: 'center'
+            }, {
+                field: 'xyz_size',
+                title: 'xyz size(mm)',
+                align: 'center',
+                halign: 'center'
+            }, {
+                field: 'color',
+                title: 'color',
+                align: 'center',
+                halign: 'center'
+            }, {
+                field: 'nozzle_size',
+                title: 'nozzle size(mm)',
+                align: 'center',
+                halign: 'center'
+            },{
+                field: 'working_time',
+                title: 'working time(hours)',
+                align: 'center',
+                halign: 'center'
+            }],
+            onRefresh: function () {
+            }
+        });
+        })
+	</script>
+{% endblock %}
+

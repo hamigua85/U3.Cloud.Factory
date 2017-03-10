@@ -1,0 +1,348 @@
+{% extends "base.html" %}
+
+{% block title %}UNITY 3D{% endblock %}
+{% block page_content %}
+    <div class="page-header">
+        {% if current_user.is_authenticated %}
+            <span class="chart" data-percent="86">
+                <span class="percent"></span>
+            </span>
+            <span class="btn js_update">Update chart</span>
+        {% else %}
+            <h2>Welcome to Unity3D Cloud Factory.</h2>
+            <p>
+                <a href="{{ url_for('auth.register') }}">
+                Click here to register
+                </a>
+            </p>
+        {% endif %}
+    </div>
+    <div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title text-center" style="font-size: x-large;">files</h3>
+            </div>
+            <div class="panel-body">
+                <div id="thelist" class="uploader-list"></div>
+                <table id="table_file"></table>
+                <div id="toolbar" style="float:left;" >
+                    <div id="uploader">
+                        <div class="btns">
+                            <div id="picker" style="float:left;">上传文件</div>
+                            <button id="deleteBtn" class="btn btn btn-danger" style="float:left;">删除文件</button>
+                            <button id="printBtn" class="btn btn btn-success" style="float:left; margin-left: 10px">上传任务</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title text-center" style="font-size: x-large;">task-printing</h3>
+            </div>
+            <div class="panel-body">
+                <table id="table_printing"></table>
+                <div id="toolbar" style="float:left;" >
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title text-center" style="font-size: x-large;">task-waiting</h3>
+            </div>
+            <div class="panel-body">
+                <table id="table_wait"></table>
+                <div id="toolbar" style="float:left;" >
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script src="{{ url_for('static', filename='jquery-2.0.3.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='jquery.easypiechart.js') }}"></script>
+    <script src="{{ url_for('static', filename='bootstrap-table.js') }}"></script>
+    <script src="{{ url_for('static', filename='webuploader-0.1.5/webuploader.js') }}"></script>
+	<script>
+    function myInterval(){
+        $.getJSON("/tasks-info", { cmd: 'task_info'},
+        function (data) { 
+            $('#table_printing').bootstrapTable('load', data);
+            $('#table_printing').bootstrapTable('filterBy', {state: 'printing'});
+            $('#table_wait').bootstrapTable('load', data);
+            $('#table_wait').bootstrapTable('filterBy', {state: 'waiting'});
+         });
+    }
+	$(function() {
+		$('.chart').easyPieChart({
+            lineCap: 'butt',
+            lineWidth: 20,
+            trackWidth: 16,
+            trackColor: '#ace',
+            scaleColor: false,
+            size:110,
+            onStep: function (from, to, percent_1) {
+                this.el.children[0].innerHTML = Math.round(percent_1*2.4) + "\xb0C";
+            }
+		});
+		var chart = window.chart = $('.chart').data('easyPieChart');
+		$('.js_update').on('click', function() {
+			chart.update(Math.random()*100);
+		});
+	});
+
+    $(window).ready(function () {
+        setInterval("myInterval()", 5000);
+        var uploader = WebUploader.create({
+            swf: 'static/webuploader-0.1.5/Uploader.swf',
+            server: '/task',
+            pick: '#picker',
+            resize: false,
+            auto: true,
+            accept: {
+                title: 'GCODE',
+                extensions: 'gcode'
+            }
+        });
+        uploader.on('fileQueued', function (file) {
+            $('#thelist').append('<div id="' + file.id + '" class="item">' +
+                '<h4 class="info">' + file.name + '</h4>' +
+                '<p class="state">waiting...</p>' +
+            '</div>');
+        });
+        uploader.on('uploadProgress', function (file, percentage) {
+            var $li = $('#' + file.id),
+                $percent = $li.find('.progress .progress-bar');
+
+            if (!$percent.length) {
+                $percent = $('<div class="progress progress-striped active">' +
+                  '<div class="progress-bar" role="progressbar" style="width: 0%">' +
+                  '</div>' +
+                '</div>').appendTo($li).find('.progress-bar');
+            }
+
+            $li.find('p.state').text('uploading');
+
+            $percent.css('width', percentage * 100 + '%');
+        });
+        uploader.on( 'uploadSuccess', function( file ) {
+            $( '#'+file.id ).find('p.state').text('已上传');
+            $('#thelist').empty();
+        });
+
+        uploader.on( 'uploadError', function( file ) {
+            $( '#'+file.id ).find('p.state').text('上传出错');
+        });
+
+        uploader.on( 'uploadComplete', function( file ) {
+            $( '#'+file.id ).find('.progress').fadeOut();
+            uploader.reset();
+            $.getJSON("/uploaded-files",
+            function (data) { 
+                $('#table_file').bootstrapTable('load', data);
+             });
+        });
+        $("#ctlBtn").click(function () {
+            uploader.upload();
+        });
+
+        function getSelectionsFileName() {
+            var deletefiles =  $('#table_file').bootstrapTable('getAllSelections');
+            var files = '';
+            for(var i =0;i<deletefiles.length - 1;i++){
+                files += deletefiles[i]['name'] + ',';
+            }
+            files += deletefiles[deletefiles.length - 1]['name'];
+            return files;
+        }
+
+        function getSelectionsFileId() {
+            var deletefiles =  $('#table_file').bootstrapTable('getAllSelections');
+            var files = '';
+            for(var i =0;i<deletefiles.length - 1;i++){
+                files += deletefiles[i]['id'] + ',';
+            }
+            files += deletefiles[deletefiles.length - 1]['id'];
+            return files;
+        }
+
+        $("#deleteBtn").click(function () {
+            var files = getSelectionsFileName();
+            $.getJSON("/delete-files", { files : files},
+            function (data) { 
+                $('#table_file').bootstrapTable('load', data);
+             });
+        });
+
+        $("#printBtn").click(function () {
+            var files_id = getSelectionsFileId();
+            $.getJSON("/print-files", { files : files_id},
+            function (data) { 
+                $('#table_file').bootstrapTable('load', data);
+             });
+        });
+
+        $('#table_file').bootstrapTable({
+            url:'/uploaded-files',
+            search:true,
+            showRefresh:true,
+            pagination:true,
+            pageNumber:1,
+            pageSize:10,
+            pageList: [10, 25, 50, 100],
+            toolbar: '#toolbar',
+            columns: [
+            {
+                checkbox: true
+            }, {
+                field: 'index',
+                title: 'index',
+                align: 'center',
+                halign: 'center',
+                formatter: function (value, row, index) {
+                    return index+1;
+                }
+            }, {
+                field: 'id',
+                title: 'id',
+                align: 'center',
+                halign: 'center'
+            }, {
+                field: 'name',
+                title: 'name',
+                align: 'center',
+                halign: 'center'
+            }, {
+                field: 'upload_time',
+                title: 'upload_time',
+                align: 'center',
+                halign: 'center'
+            }, {
+                field: 'size',
+                title: 'size',
+                align: 'center',
+                halign: 'center'
+            }, {
+                field: 'owner',
+                title: 'owner',
+                align: 'center',
+                halign: 'center'
+            }],
+            onRefresh: function () {
+            }
+        });
+        $('#table_printing').bootstrapTable({
+            search:true,
+            showRefresh:true,
+            pagination:true,
+            pageNumber:1,
+            pageSize:10,
+            pageList: [10, 25, 50, 100],
+            columns: [
+            {
+                field: 'index',
+                title: 'index',
+                align: 'center',
+                halign: 'center',
+                formatter: function (value, row, index) {
+                    return index + 1;
+                }
+            }, {
+                field: 'id',
+                title: 'id',
+                align: 'center',
+                halign: 'center'
+            }, {
+                field: 'file_info',
+                title: 'file_info',
+                align: 'center',
+                halign: 'center'
+            }, {
+                field: 'machine_info',
+                title: 'machine_info',
+                align: 'center',
+                halign: 'center'
+            }, {
+                field: 'start',
+                title: 'start',
+                align: 'center',
+                halign: 'center'
+            }, {
+                field: 'end',
+                title: 'end',
+                align: 'center',
+                halign: 'center'
+            }, {
+                field: 'priority',
+                title: 'priority',
+                align: 'center',
+                halign: 'center'
+            }, {
+                field: 'progress',
+                title: 'progress',
+                align: 'center',
+                halign: 'center'
+            }, {
+                field: 'owner',
+                title: 'owner',
+                align: 'center',
+                halign: 'center'
+            }],
+            onRefresh: function () {
+            }
+        });
+        $('#table_wait').bootstrapTable({
+            search:true,
+            showRefresh:true,
+            pagination:true,
+            pageNumber:1,
+            pageSize:10,
+            pageList: [10, 25, 50, 100],
+            columns: [
+            {
+                field: 'index',
+                title: 'index',
+                align: 'center',
+                halign: 'center',
+                formatter: function (value, row, index) {
+                    return index + 1;
+                }
+            }, {
+                field: 'id',
+                title: 'id',
+                align: 'center',
+                halign: 'center'
+            }, {
+                field: 'file_info',
+                title: 'file_info',
+                align: 'center',
+                halign: 'center'
+            }, {
+                field: 'machine_info',
+                title: 'machine_info',
+                align: 'center',
+                halign: 'center'
+            }, {
+                field: 'start',
+                title: 'start',
+                align: 'center',
+                halign: 'center'
+            }, {
+                field: 'priority',
+                title: 'priority',
+                align: 'center',
+                halign: 'center'
+            }, {
+                field: 'owner',
+                title: 'owner',
+                align: 'center',
+                halign: 'center'
+            }],
+            onRefresh: function () {
+            }
+        });
+        })
+	</script>
+{% endblock %}
