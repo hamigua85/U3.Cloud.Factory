@@ -1,10 +1,53 @@
 import sys, requests, time, json
 from threading import Timer
 sys.path.append("../../Common")
-from Common.machine import FDM
+from Common.machine import FDM, State
+from flask import Flask, request
 
+app = Flask(__name__)
 
 current_machine = FDM()
+
+
+@app.route("/reboot")
+def reboot():
+    return "reboot..."
+
+
+@app.route("/init")
+def init():
+    return "init..."
+
+
+@app.route("/start-task", methods=['POST'])
+def start_task():
+    if current_machine.state is State.Ready:
+        upload_files = request.files.getlist('file')
+        print "get file"
+    else:
+        print "busy..."
+
+
+@app.route("/pause-task")
+def pause_task():
+    if current_machine.state is not State.Working:
+        print "pause task..."
+    else:
+        print "not working..."
+
+
+@app.route("/cancel-task")
+def cancel_task():
+    if current_machine.state is not State.Working:
+        print "cancel task..."
+        init()
+    else:
+        print "not working..."
+
+
+@app.route("/state")
+def state():
+    return get_machine_state()
 
 
 def get_machine_state():

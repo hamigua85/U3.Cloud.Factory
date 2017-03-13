@@ -9,7 +9,6 @@ from .forms import EditProfileForm, EditProfileAdminForm, PostForm
 from app import db
 from Common.models import User, Role, Post, File, Task, Permission
 from app.decorators import admin_required
-from Common.machine import Machine
 
 
 from app import task_redis
