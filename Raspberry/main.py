@@ -3,7 +3,7 @@ from threading import Timer
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from Common.machine import FDM, State
 from flask import Flask, request
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "Common")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "Common", "Printrun-master")))
 for item in sys.path:
     print item
 from printrun.printcore import printcore
