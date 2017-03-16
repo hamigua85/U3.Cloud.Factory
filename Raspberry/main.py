@@ -5,7 +5,7 @@ for item in sys.path:
     print item
 from Common.machine import FDM, State
 from flask import Flask, request
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "Common", "Printrun-master")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "Common")))
 from printrun.printcore import printcore
 
 
