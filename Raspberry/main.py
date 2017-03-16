@@ -3,7 +3,10 @@ from threading import Timer
 sys.path.append("../../Common")
 from Common.machine import FDM, State
 from flask import Flask, request
+from printcore import printcore
 
+
+printer = printcore('/dev/ttyUSB0', 115200)
 app = Flask(__name__)
 
 current_machine = FDM()
@@ -16,7 +19,14 @@ def reboot():
 
 @app.route("/init")
 def init():
-    return "init..."
+    global printer
+    print "init..."
+    try:
+        printer.disconnect()
+        printer = printcore('/dev/tty.usbserial-AL00YO7M', 115200)
+        return printer
+    except Exception, e:
+        return e
 
 
 @app.route("/start-task", methods=['POST'])
@@ -50,6 +60,13 @@ def state():
     return get_machine_state()
 
 
+@app.route("/send-cmd", methods=['POST'])
+def send_cmd():
+    cmd = request.args.get('cmd')
+    result = printer.send_now(cmd)
+    return result
+
+
 def get_machine_state():
     current_machine.x_size = 100
     current_machine.y_size = 100
@@ -61,7 +78,6 @@ def send_machine_state():
     info = get_machine_state()
     try:
         print str(time.time())
-        print info
         r = requests.post("http://192.168.0.99:5000/online_machine_state", data=json.dumps(info), timeout=5)
     except Exception, e:
         print e
@@ -70,4 +86,5 @@ def send_machine_state():
         t.start()
 
 if __name__ == "__main__":
-    send_machine_state()
+    # init()
+    app.run(host="127.0.0.1", port=5001, debug=False)

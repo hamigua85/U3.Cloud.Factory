@@ -3,9 +3,13 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/Server" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Common/Printrun-master" isTestSource="false" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="Python 2.7.10 virtualenv at /Volumes/Work/U3/Cloud.Factory/U3.Cloud.Factory.Env" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+  <component name="PackageRequirementsSettings">
+    <option name="requirementsPath" value="$MODULE_DIR$/Common/requirements.txt" />
   </component>
   <component name="TestRunnerService">
     <option name="PROJECT_TEST_RUNNER" value="Unittests" />
