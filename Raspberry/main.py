@@ -2,7 +2,7 @@ import sys, requests, time, json, os
 from threading import Timer
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from Common.machine import FDM, State
-from flask import Flask, request
+from flask import Flask, request, jsonify
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "Common", "Printrun-master")))
 for item in sys.path:
     print item
@@ -67,7 +67,7 @@ def state():
 def send_cmd():
     cmd = request.args.get('cmd')
     result = printer.send_now(cmd)
-    return result
+    return jsonify(result)
 
 
 def get_machine_state():
