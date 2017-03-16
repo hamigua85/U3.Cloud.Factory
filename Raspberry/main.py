@@ -1,7 +1,8 @@
 import sys, requests, time, json, os
 from threading import Timer
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-print os.path
+for item in sys.path:
+    print item
 from Common.machine import FDM, State
 from flask import Flask, request
 from printrun.printcore import printcore
