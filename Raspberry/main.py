@@ -65,6 +65,7 @@ def state():
 
 @app.route("/send-cmd", methods=['POST'])
 def send_cmd():
+    global printer
     cmd = request.args.get('cmd')
     result = printer.send_now(cmd)
     print result
