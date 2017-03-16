@@ -90,4 +90,4 @@ def send_machine_state():
 
 if __name__ == "__main__":
     # init()
-    app.run(host="127.0.0.1", port=5001, debug=False)
+    app.run(host="0.0.0.0", port=5001, debug=False)
