@@ -10,6 +10,7 @@ from printrun.printcore import printcore
 
 
 printer = printcore('/dev/ttyUSB0', 115200)
+print printer
 app = Flask(__name__)
 
 current_machine = FDM()
@@ -66,6 +67,7 @@ def state():
 @app.route("/send-cmd", methods=['POST'])
 def send_cmd():
     global printer
+    print printer
     cmd = request.args.get('cmd')
     result = printer.send_now(cmd)
     print result
