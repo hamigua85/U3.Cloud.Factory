@@ -67,6 +67,7 @@ def state():
 def send_cmd():
     cmd = request.args.get('cmd')
     result = printer.send_now(cmd)
+    print result
     return jsonify(result)
 
 
