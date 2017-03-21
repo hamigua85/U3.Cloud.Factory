@@ -7,6 +7,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "C
 for item in sys.path:
     print item
 from printrun.printcore import printcore
+from printrun import gcoder
 
 
 printer = printcore('/dev/ttyUSB0', baud=115200)
