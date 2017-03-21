@@ -66,7 +66,6 @@ def state():
 def send_cmd():
     printer = printcore('/dev/ttyUSB0', baud=115200)
     cmd = request.args.get('cmd')
-    printer.connect()
     result = printer.send_now(cmd)
     print result
     return jsonify(result)
