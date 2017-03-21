@@ -10,6 +10,7 @@ from printrun.printcore import printcore
 from printrun import gcoder
 
 printer = printcore('/dev/ttyUSB0', baud=115200)
+print printer.__dict__
 
 app = Flask(__name__)
 
