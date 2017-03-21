@@ -11,7 +11,6 @@ from printrun import gcoder
 
 
 printer = printcore('/dev/ttyUSB0', baud=115200)
-printer.connect()
 app = Flask(__name__)
 
 current_machine = FDM()

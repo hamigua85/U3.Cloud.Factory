@@ -219,7 +219,6 @@ class printcore():
             self.read_thread = threading.Thread(target = self._listen)
             self.read_thread.start()
             self._start_sender()
-            print 'alive'
 
     def reset(self):
         """Reset the printer
