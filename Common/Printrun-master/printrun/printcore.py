@@ -160,7 +160,6 @@ class printcore():
             # Connect to socket if "port" is an IP, device if not
             host_regexp = re.compile("^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$|^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$")
             is_serial = True
-            print port
             if ":" in port:
                 bits = port.split(":")
                 if len(bits) == 2:
@@ -172,7 +171,6 @@ class printcore():
                     except:
                         pass
             self.writefailures = 0
-            print port
             if not is_serial:
                 self.printer_tcp = socket.socket(socket.AF_INET,
                                                  socket.SOCK_STREAM)
@@ -192,7 +190,6 @@ class printcore():
                     self.printer_tcp = None
                     return
             else:
-                print 'is serial!!!'
                 disable_hup(self.port)
                 self.printer_tcp = None
                 try:
@@ -200,6 +197,7 @@ class printcore():
                                           baudrate = self.baud,
                                           timeout = 0.25,
                                           parity = PARITY_ODD)
+                    print self.printer
                     self.printer.close()
                     self.printer.parity = PARITY_NONE
                     try:  #this appears not to work on many platforms, so we're going to call it but not care if it fails
