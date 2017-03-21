@@ -86,6 +86,7 @@ def send_machine_state():
     info = get_machine_state()
     try:
         print str(time.time())
+        print info
         r = requests.post("http://192.168.0.99:5000/online_machine_state", data=json.dumps(info), timeout=5)
     except Exception, e:
         print e
