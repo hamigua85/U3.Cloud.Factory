@@ -197,7 +197,6 @@ class printcore():
                                           baudrate = self.baud,
                                           timeout = 0.25,
                                           parity = PARITY_ODD)
-                    print self.printer
                     self.printer.close()
                     self.printer.parity = PARITY_NONE
                     try:  #this appears not to work on many platforms, so we're going to call it but not care if it fails
@@ -216,6 +215,7 @@ class printcore():
                                   "\n" + _("IO error: %s") % e)
                     self.printer = None
                     return
+            print 'alive'
             self.stop_read_thread = False
             self.read_thread = threading.Thread(target = self._listen)
             self.read_thread.start()
