@@ -9,6 +9,8 @@ for item in sys.path:
 from printrun.printcore import printcore
 from printrun import gcoder
 
+printer = printcore('/dev/ttyUSB0', baud=115200)
+printer.online = True
 
 app = Flask(__name__)
 
@@ -64,7 +66,7 @@ def state():
 
 @app.route("/send-cmd", methods=['POST'])
 def send_cmd():
-    printer = printcore('/dev/ttyUSB0', baud=115200)
+    global printer
     cmd = request.args.get('cmd')
     result = printer.send_now(cmd)
     print result
