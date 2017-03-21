@@ -9,7 +9,7 @@ for item in sys.path:
 from printrun.printcore import printcore
 
 
-printer = printcore('/dev/ttyUSB0', 115200)
+printer = printcore('/dev/ttyUSB0', baud=115200)
 printer.connect()
 app = Flask(__name__)
 
