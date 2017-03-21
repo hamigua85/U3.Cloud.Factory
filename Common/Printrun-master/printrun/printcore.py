@@ -172,6 +172,7 @@ class printcore():
                     except:
                         pass
             self.writefailures = 0
+            print port
             if not is_serial:
                 self.printer_tcp = socket.socket(socket.AF_INET,
                                                  socket.SOCK_STREAM)
@@ -191,6 +192,7 @@ class printcore():
                     self.printer_tcp = None
                     return
             else:
+                print 'is serial!!!'
                 disable_hup(self.port)
                 self.printer_tcp = None
                 try:
