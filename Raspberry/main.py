@@ -11,7 +11,7 @@ from printrun import gcoder
 
 printer = printcore('/dev/ttyUSB1', baud=115200)
 for item in printer.__dict__:
-    print item + ':' + printer.__dict__[item]
+    print item + ':' + str(printer.__dict__[item])
 
 app = Flask(__name__)
 
