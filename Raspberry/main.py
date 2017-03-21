@@ -10,7 +10,6 @@ from printrun.printcore import printcore
 from printrun import gcoder
 
 
-printer = printcore('/dev/ttyUSB0', baud=115200)
 app = Flask(__name__)
 
 current_machine = FDM()
@@ -23,7 +22,6 @@ def reboot():
 
 @app.route("/init")
 def init():
-    global printer
     print "init..."
     try:
         printer.disconnect()
@@ -66,7 +64,7 @@ def state():
 
 @app.route("/send-cmd", methods=['POST'])
 def send_cmd():
-    global printer
+    printer = printcore('/dev/ttyUSB0', baud=115200)
     cmd = request.args.get('cmd')
     printer.connect()
     result = printer.send_now(cmd)
