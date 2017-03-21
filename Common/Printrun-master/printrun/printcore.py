@@ -215,11 +215,11 @@ class printcore():
                                   "\n" + _("IO error: %s") % e)
                     self.printer = None
                     return
-            print 'alive'
             self.stop_read_thread = False
             self.read_thread = threading.Thread(target = self._listen)
             self.read_thread.start()
             self._start_sender()
+            print 'alive'
 
     def reset(self):
         """Reset the printer
