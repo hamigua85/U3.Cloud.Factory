@@ -10,8 +10,6 @@ from printrun.printcore import printcore
 from printrun import gcoder
 
 printer = printcore('/dev/ttyUSB0', baud=115200)
-printer.online = True
-printer.send_now("G28")
 
 app = Flask(__name__)
 
@@ -76,9 +74,11 @@ def send_cmd():
 
 
 def get_machine_state():
+    global printer
     current_machine.x_size = 100
     current_machine.y_size = 100
     current_machine.z_size = 100
+    current_machine.online = printer.online
     return current_machine.__dict__
 
 
@@ -94,5 +94,5 @@ def send_machine_state():
         t.start()
 
 if __name__ == "__main__":
-    # init()
+    send_machine_state()
     app.run(host="0.0.0.0", port=5001, debug=False)

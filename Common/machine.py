@@ -58,7 +58,7 @@ class Machine:
 class FDM(Machine):
     def __init__(self, index=None, address=None, x_size=None, y_size=None, z_size=None, material=None, state=None,
                  temp_nozzle=None, temp_bed=None, worked_time=None, material_color=None, nozzle_size=None,
-                 task_info=None):
+                 task_info=None, online=None):
         self.index = index
         self.address = address
         self.type = Type.FDM
@@ -73,6 +73,7 @@ class FDM(Machine):
         self.worked_time = worked_time
         self.nozzle_size = nozzle_size
         self.task_info = task_info
+        self.online = online
 
     def parse_data(self, data):
         state = dict()
