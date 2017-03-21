@@ -68,7 +68,7 @@ def state():
 def send_cmd():
     global printer
     cmd = request.args.get('cmd')
-    result = printer.send_now(cmd)
+    result = printer.send_now('G28')
     print result
     return jsonify(result)
 
