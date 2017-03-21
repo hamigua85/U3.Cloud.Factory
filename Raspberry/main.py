@@ -9,7 +9,7 @@ for item in sys.path:
 from printrun.printcore import printcore
 from printrun import gcoder
 
-printer = printcore('/dev/tty.usbserial-AL00YO7M', baud=115200)
+printer = printcore('/dev/ttyUSB1', baud=115200)
 for item in printer.__dict__:
     print item + ':' + str(printer.__dict__[item])
 
