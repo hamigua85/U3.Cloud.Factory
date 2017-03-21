@@ -11,6 +11,7 @@ from printrun import gcoder
 
 printer = printcore('/dev/ttyUSB0', baud=115200)
 printer.online = True
+printer.send_now("G28")
 
 app = Flask(__name__)
 
