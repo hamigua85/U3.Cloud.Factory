@@ -27,6 +27,7 @@ def init():
     global printer
     try:
         printer = printcore(serial_to_usb, 115200)
+        print printer
     except Exception, e:
         return e
 
@@ -93,5 +94,5 @@ def send_machine_state():
         t.start()
 
 if __name__ == "__main__":
-    send_machine_state()
+    # send_machine_state()
     app.run(host="0.0.0.0", port=5001, debug=False)
