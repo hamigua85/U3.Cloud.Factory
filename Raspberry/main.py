@@ -10,8 +10,6 @@ from printrun.printcore import printcore
 from printrun import gcoder
 
 printer = printcore('/dev/ttyUSB0', baud=115200)
-for item in printer.__dict__:
-    print item + ':' + str(printer.__dict__[item])
 
 app = Flask(__name__)
 
@@ -27,7 +25,6 @@ def reboot():
 def init():
     print "init..."
     try:
-        printer.disconnect()
         printer = printcore('/dev/tty.usbserial-AL00YO7M', 115200)
         return printer
     except Exception, e:
@@ -69,8 +66,7 @@ def state():
 def send_cmd():
     global printer
     cmd = request.args.get('cmd')
-    print cmd
-    result = printer.send_now("G28")
+    result = printer.send_now(cmd)
     print result
     return jsonify(result)
 
