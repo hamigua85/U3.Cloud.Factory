@@ -608,6 +608,7 @@ class printcore():
                 try: self.sendcb(command, gline)
                 except: self.logError(traceback.format_exc())
             try:
+                print str(command + "\n")
                 self.printer.write(str(command + "\n"))
                 if self.printer_tcp:
                     try:
