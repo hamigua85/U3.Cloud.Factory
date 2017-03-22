@@ -195,7 +195,7 @@ class printcore():
                 try:
                     self.printer = Serial(port = self.port,
                                           baudrate = self.baud,
-                                          timeout = 0.25,
+                                          timeout = 1,
                                           parity = PARITY_ODD)
                     self.printer.close()
                     self.printer.parity = PARITY_NONE
