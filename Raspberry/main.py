@@ -11,6 +11,7 @@ from printrun import gcoder
 
 serial_to_usb = '/dev/ttyUSB0'
 printer = printcore(serial_to_usb, baud=115200)
+printer.online = True
 
 app = Flask(__name__)
 
@@ -66,8 +67,8 @@ def state():
 
 @app.route("/send-cmd", methods=['POST'])
 def send_cmd():
+    global printer
     cmd = request.args.get('cmd')
-    printer = printcore(serial_to_usb, 115200)
     result = printer.send_now(cmd)
     print result
     return jsonify(result)
