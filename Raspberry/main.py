@@ -22,7 +22,7 @@ def reboot():
     return "reboot..."
 
 
-@app.route("/init")
+@app.route("/init", methods=['POST'])
 def init():
     global printer
     try:
