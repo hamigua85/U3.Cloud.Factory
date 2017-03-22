@@ -10,7 +10,7 @@ from printrun.printcore import printcore
 from printrun import gcoder
 
 serial_to_usb = '/dev/ttyUSB0'
-printer
+printer = None
 
 app = Flask(__name__)
 
@@ -95,6 +95,5 @@ def send_machine_state():
         t.start()
 
 if __name__ == "__main__":
-    printer = printcore(serial_to_usb, baud=115200)
     # send_machine_state()
     app.run(host="0.0.0.0", port=5001, debug=False)
