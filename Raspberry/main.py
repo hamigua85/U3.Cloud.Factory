@@ -21,9 +21,12 @@ current_machine = FDM()
 def init_serial():
     global printer
     for index in range(0, 3):
-        printer = printcore("{0}{1}".format(serial_to_usb, index), baudrate)
-        if printer.printer is not None:
-            break
+        try:
+            printer = printcore("{0}{1}".format(serial_to_usb, index), baudrate)
+            if printer.printer is not None:
+                break
+        except Exception, e:
+            print e
 
 init_serial()
 
