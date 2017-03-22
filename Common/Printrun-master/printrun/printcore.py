@@ -609,7 +609,8 @@ class printcore():
                 except: self.logError(traceback.format_exc())
             try:
                 print str(command + "\n")
-                print self.printer.write(str(command + "\n"))
+                result = self.printer.write(str(command + "\n"))
+                print result
                 if self.printer_tcp:
                     try:
                         self.printer.flush()
