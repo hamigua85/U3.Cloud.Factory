@@ -195,7 +195,7 @@ class printcore():
                 try:
                     self.printer = Serial(port = self.port,
                                           baudrate = self.baud,
-                                          timeout = 0.25,
+                                          timeout = 1,
                                           parity = PARITY_ODD)
                     self.printer.close()
                     self.printer.parity = PARITY_NONE
@@ -231,6 +231,7 @@ class printcore():
     def _readline(self):
         try:
             try:
+                print 'readthread_alive'
                 line = self.printer.readline()
                 if self.printer_tcp and not line:
                     raise OSError(-1, "Read EOF from socket")
@@ -607,7 +608,7 @@ class printcore():
                 try: self.sendcb(command, gline)
                 except: self.logError(traceback.format_exc())
             try:
-                self.printer.write(str(command + "\r\n"))
+                self.printer.write(str(command + "\n"))
                 if self.printer_tcp:
                     try:
                         self.printer.flush()
