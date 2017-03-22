@@ -10,7 +10,8 @@ from printrun.printcore import printcore
 from printrun import gcoder
 
 serial_to_usb = '/dev/ttyUSB0'
-printer = printcore(serial_to_usb, 115200)
+baudrate = 115200
+printer = printcore(serial_to_usb, baudrate)
 time.sleep(2)
 
 app = Flask(__name__)
@@ -27,7 +28,8 @@ def reboot():
 def init():
     global printer
     try:
-        printer = printcore(serial_to_usb, 115200)
+        printer.disconnect()
+        printer = printcore(serial_to_usb, baudrate)
         print printer
         return jsonify()
     except Exception, e:
@@ -97,4 +99,5 @@ def send_machine_state():
 
 if __name__ == "__main__":
     # send_machine_state()
+    init()
     app.run(host="0.0.0.0", port=5001, debug=False)
