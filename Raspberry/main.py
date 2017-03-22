@@ -9,14 +9,23 @@ for item in sys.path:
 from printrun.printcore import printcore
 from printrun import gcoder
 
-serial_to_usb = '/dev/ttyUSB0'
+serial_to_usb = '/dev/ttyUSB'
 baudrate = 115200
-printer = printcore(serial_to_usb, baudrate)
-time.sleep(2)
+printer = None
 
 app = Flask(__name__)
 
 current_machine = FDM()
+
+
+def init_serial():
+    global printer
+    for index in range(0, 3):
+        printer = printcore("{0}{1}".format(serial_to_usb, index), baudrate)
+        if printer.printer is not None:
+            break
+
+init_serial()
 
 
 @app.route("/reboot")
@@ -29,7 +38,7 @@ def init():
     global printer
     try:
         printer.disconnect()
-        printer = printcore(serial_to_usb, baudrate)
+        init_serial()
         print printer
         return jsonify()
     except Exception, e:
