@@ -11,6 +11,7 @@ from printrun import gcoder
 
 serial_to_usb = '/dev/ttyUSB2'
 printer = printcore(serial_to_usb, 115200)
+time.sleep(2)
 
 app = Flask(__name__)
 
