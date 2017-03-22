@@ -195,7 +195,7 @@ class printcore():
                 try:
                     self.printer = Serial(port = self.port,
                                           baudrate = self.baud,
-                                          timeout = 1,
+                                          timeout = 0.25,
                                           parity = PARITY_ODD)
                     self.printer.close()
                     self.printer.parity = PARITY_NONE
@@ -231,8 +231,8 @@ class printcore():
     def _readline(self):
         try:
             try:
-                print 'readthread_alive'
                 line = self.printer.readline()
+                print line
                 if self.printer_tcp and not line:
                     raise OSError(-1, "Read EOF from socket")
             except socket.timeout:

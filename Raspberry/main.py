@@ -9,8 +9,8 @@ for item in sys.path:
 from printrun.printcore import printcore
 from printrun import gcoder
 
-serial_to_usb = '/dev/ttyUSB0'
-printer = None
+serial_to_usb = '/dev/ttyUSB2'
+printer = printcore(serial_to_usb, 115200)
 
 app = Flask(__name__)
 
