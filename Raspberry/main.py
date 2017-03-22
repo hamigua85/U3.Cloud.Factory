@@ -9,7 +9,8 @@ for item in sys.path:
 from printrun.printcore import printcore
 from printrun import gcoder
 
-printer = printcore('/dev/ttyUSB1', baud=115200)
+serial_to_usb = '/dev/ttyUSB0'
+printer = printcore(serial_to_usb, baud=115200)
 
 app = Flask(__name__)
 
@@ -23,10 +24,9 @@ def reboot():
 
 @app.route("/init")
 def init():
-    print "init..."
+    global printer
     try:
-        printer = printcore('/dev/tty.usbserial-AL00YO7M', 115200)
-        return printer
+        printer = printcore(serial_to_usb, 115200)
     except Exception, e:
         return e
 
