@@ -28,6 +28,7 @@ def init():
     try:
         printer = printcore(serial_to_usb, 115200)
         print printer
+        return jsonify(printer)
     except Exception, e:
         return e
 
