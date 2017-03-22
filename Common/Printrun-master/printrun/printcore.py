@@ -232,7 +232,6 @@ class printcore():
         try:
             try:
                 line = self.printer.readline()
-                print line
                 if self.printer_tcp and not line:
                     raise OSError(-1, "Read EOF from socket")
             except socket.timeout:
@@ -610,7 +609,6 @@ class printcore():
             try:
                 print str(command + "\n")
                 result = self.printer.write(str(command + "\n"))
-                print result
                 if self.printer_tcp:
                     try:
                         self.printer.flush()
