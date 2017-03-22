@@ -110,5 +110,5 @@ def send_machine_state():
 
 if __name__ == "__main__":
     # send_machine_state()
-    init()
+    init_serial()
     app.run(host="0.0.0.0", port=5001, debug=False)
