@@ -28,7 +28,7 @@ def init():
     try:
         printer = printcore(serial_to_usb, 115200)
         print printer
-        return jsonify(printer)
+        return jsonify()
     except Exception, e:
         return e
 
@@ -66,8 +66,8 @@ def state():
 
 @app.route("/send-cmd", methods=['POST'])
 def send_cmd():
-    global printer
     cmd = request.args.get('cmd')
+    printer = printcore(serial_to_usb, 115200)
     result = printer.send_now(cmd)
     print result
     return jsonify(result)
