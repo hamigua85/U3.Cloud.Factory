@@ -9,7 +9,7 @@ for item in sys.path:
 from printrun.printcore import printcore
 from printrun import gcoder
 
-serial_to_usb = '/dev/ttyUSB2'
+serial_to_usb = '/dev/tty.usbserial-AL00YO7M'
 printer = printcore(serial_to_usb, 115200)
 time.sleep(2)
 

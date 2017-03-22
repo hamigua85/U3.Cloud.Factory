@@ -8,6 +8,7 @@ from serial import *
 import sys
 
 if sys.platform.startswith('linux'):
+	print 'linux'
 	import serial.serialposix
 
 	try:
