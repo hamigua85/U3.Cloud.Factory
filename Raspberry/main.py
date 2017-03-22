@@ -23,12 +23,11 @@ def init_serial():
     for index in range(0, 3):
         try:
             printer = printcore("{0}{1}".format(serial_to_usb, index), baudrate)
+            print printer
             if printer.printer is not None:
                 break
         except Exception, e:
             print e
-
-init_serial()
 
 
 @app.route("/reboot")
