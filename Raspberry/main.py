@@ -41,7 +41,6 @@ def init():
     try:
         printer.disconnect()
         init_serial()
-        print printer
         return jsonify()
     except Exception, e:
         return e
@@ -109,6 +108,6 @@ def send_machine_state():
         t.start()
 
 if __name__ == "__main__":
-    # send_machine_state()
     init_serial()
+    send_machine_state()
     app.run(host="0.0.0.0", port=5001, debug=False)
