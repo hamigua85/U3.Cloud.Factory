@@ -28,7 +28,7 @@
     }
 
     $(window).ready(function () {
-        setInterval("myInterval()", 2000);
+        setInterval("myInterval()", 5000);
 
         $('#table').bootstrapTable({
             url:'/online-machines?cmd=machine_info',
@@ -44,6 +44,7 @@
                 title: 'index',
                 align: 'center',
                 halign: 'center',
+                valign: 'center',
                 formatter: function (value, row, index) {
                     return index+1;
                 }

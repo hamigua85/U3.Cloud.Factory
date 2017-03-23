@@ -46,6 +46,7 @@ class NozzleSize:
 
 class Machine:
     def __init__(self):
+        self.address = None
         self.type = None
         self.material = None
         self.material_color = None
@@ -68,8 +69,8 @@ class FDM(Machine):
     def __init__(self, index=None, address=None, x_size=None, y_size=None, z_size=None, material=None, state=None,
                  temp_nozzle=None, temp_bed=None, worked_time=None, material_color=None, nozzle_size=None,
                  task_info=None, online=None):
-        self.index = index
         self.address = address
+        self.index = index
         self.type = Type.FDM
         self.x_size = x_size
         self.y_size = y_size

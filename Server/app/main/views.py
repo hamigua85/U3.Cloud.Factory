@@ -1,5 +1,5 @@
 from flask import render_template, redirect, url_for, abort, flash, request, jsonify, current_app
-import datetime, sqlite3, requests, os
+import datetime, sqlite3, requests, os, threading
 import json, uuid
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
@@ -12,7 +12,7 @@ from app.decorators import admin_required
 
 
 from app import online_machines_redis
-from Common.machine import FDM
+from Common.machine import FDM, State
 
 
 ALLOWED_EXTENSIONS = set(['gcode'])
@@ -226,9 +226,26 @@ def online_machine_state():
         return jsonify()
 
 
+def assign_task(waiting_task):
+    for machine in machines_info:
+        if machine['state'] == State.Ready and machine['online'] is True:
+            files = {'file': open(waiting_task.file.path, 'rb')}
+            r = requests.post('{0}/{1}'.format(machine.address, 'start-task'), files=files, timeout=10)
+            print r
+
+
 @main.route('/scheduler-tasks', methods=['POST'])
 def scheduler_tasks():
     if request.method == 'POST':
-        print "scheduler-tasks"
+        machines_info = get_online_machines()
+        preoperation_task = Task.query.filter_by(state='preoperation').all()
+        if len(preoperation_task) == 0:
+            waiting_task = Task.query.filter_by(state='waiting').all()
+            if len(waiting_task) > 0:
+                for tasks in waiting_task:
+                    tasks.state = 'preoperation'
+                db.session.commit()
+                assign_thread = threading.Thread(target=assign_task, args=(waiting_task,))
+                assign_thread.start()
         return jsonify()
 
