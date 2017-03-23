@@ -7,6 +7,7 @@ class State:
     Working = 'working'
     Done = 'done'
     Fault = 'fault'
+    SerialErr = 'SerialErr'
 
 
 class Type:
@@ -33,6 +34,14 @@ class Material:
 
     ABS = 'ABS'
     PLA = 'PLA'
+
+
+class NozzleSize:
+    def __init__(self):
+        pass
+
+    Size_40 = 0.4
+    Size_20 = 0.2
 
 
 class Machine:

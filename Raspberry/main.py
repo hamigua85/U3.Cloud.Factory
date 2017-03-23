@@ -1,21 +1,21 @@
 import sys, requests, time, json, os
 from threading import Timer
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-from Common.machine import FDM, State
+from Common.machine import FDM, State, Material, Color, NozzleSize
 from flask import Flask, request, jsonify
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "Common", "Printrun-master")))
 for item in sys.path:
     print item
 from printrun.printcore import printcore
 from printrun import gcoder
+from xml.dom.minidom import parse, parseString
 
-serial_to_usb = '/dev/ttyUSB'
-baudrate = 115200
 printer = None
 
 app = Flask(__name__)
 
-current_machine = FDM()
+current_machine = FDM(state=State.Fault)
+
 
 def parse_temperature(line):
     if 'ok' in line and 'T' in line and 'B' in line and 'T0' in line:
@@ -23,16 +23,28 @@ def parse_temperature(line):
         current_machine.temp_bed = line.split(' ')[3].split(':')[1]
 
 
-def init_printer():
+def init_printer(machine_config):
     global printer
     for index in range(0, 3):
         try:
-            printer = printcore("{0}{1}".format(serial_to_usb, index), baudrate)
+            serial_to_usb = machine_config.getElementsByTagName("serialport")[0].firstChild.data
+            baudrate = machine_config.getElementsByTagName("baudrate")[0].firstChild.data
+            printer = printcore("{0}{1}".format(serial_to_usb, index), int(baudrate))
             print printer
             if printer.printer is not None:
                 printer.tempcb = parse_temperature
+                current_machine.state = State.Ready
+                current_machine.x_size = int(machine_config.getElementsByTagName("x")[0].firstChild.data)
+                current_machine.y_size = int(machine_config.getElementsByTagName("y")[0].firstChild.data)
+                current_machine.z_size = int(machine_config.getElementsByTagName("z")[0].firstChild.data)
+                current_machine.material = machine_config.getElementsByTagName("material")[0].firstChild.data
+                current_machine.material_color = \
+                    machine_config.getElementsByTagName("material_color")[0].firstChild.data
+                current_machine.nozzle_size = int(machine_config.getElementsByTagName("nozzle_size")[0].firstChild.data)
+                current_machine.worked_time = int(machine_config.getElementsByTagName("worked_time")[0].firstChild.data)
                 break
         except Exception, e:
+            current_machine.state = State.SerialErr
             print e
 
 
@@ -94,7 +106,7 @@ def send_cmd():
 
 def get_machine_state():
     global printer
-    printer.send_now('M105')
+    printer.send('M105')
     current_machine.x_size = 100
     current_machine.y_size = 100
     current_machine.z_size = 100
@@ -116,6 +128,8 @@ def send_machine_state():
 
 
 if __name__ == "__main__":
-    init_printer()
+    dom = parse(os.path.abspath(os.path.dirname(__file__)) + '/config.xml')
+    config_element = dom.getElementsByTagName("config")[0]
+    init_printer(config_element)
     send_machine_state()
     app.run(host="0.0.0.0", port=5001, debug=False)

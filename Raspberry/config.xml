@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<config>
+    <type>FDM</type>
+    <task_name></task_name>
+    <task_state></task_state>
+    <x>100</x>
+    <y>100</y>
+    <z>100</z>
+    <baudrate>115200</baudrate>
+    <serialport>/dev/ttyUSB</serialport>
+    <material>PLA</material>
+    <material_color>black</material_color>
+    <nozzle_size>0.3</nozzle_size>
+    <worked_time>0</worked_time>
+</config>
