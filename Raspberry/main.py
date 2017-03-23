@@ -88,6 +88,7 @@ def send_cmd():
 
 def get_machine_state():
     global printer
+    printer.send_now('M105')
     current_machine.x_size = 100
     current_machine.y_size = 100
     current_machine.z_size = 100
@@ -107,7 +108,15 @@ def send_machine_state():
         t = Timer(5, send_machine_state)
         t.start()
 
+
+def parse_temperature(line):
+    if 'ok' in line and 'T' in line and 'B' in line and 'T0' in line:
+        current_machine.temp_nozzle = line.split(' ')[1].split(':')[1]
+        current_machine.temp_bed = line.split(' ')[3].split(':')[1]
+
+
 if __name__ == "__main__":
+    printer.tempcb = parse_temperature
     init_serial()
     send_machine_state()
     app.run(host="0.0.0.0", port=5001, debug=False)

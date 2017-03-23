@@ -3,6 +3,7 @@
     <words>
       <w>baudrate</w>
       <w>taskbase</w>
+      <w>tempcb</w>
     </words>
   </dictionary>
 </component>

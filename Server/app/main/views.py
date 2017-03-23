@@ -1,6 +1,6 @@
 from flask import render_template, redirect, url_for, abort, flash, request, jsonify, current_app
-import datetime, sqlite3, requests
-import json
+import datetime, sqlite3, requests, os
+import json, uuid
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 
@@ -11,7 +11,7 @@ from Common.models import User, Role, Post, File, Task, Permission
 from app.decorators import admin_required
 
 
-from app import task_redis
+from app import online_machines_redis
 from Common.machine import FDM
 
 
@@ -128,9 +128,9 @@ def delete_files():
     return jsonify(file_list)
 
 
-@main.route('/print-files')
+@main.route('/add-tasks')
 @login_required
-def print_files():
+def add_tasks():
     files_id = request.args.get('files').split(',')
     new_task = []
     machine_info = FDM()
@@ -167,37 +167,40 @@ def check_the_same_filename(filename):
     return filename
 
 
-@main.route('/task', methods=['GET', 'POST'])
+@main.route('/upload-file', methods=['POST'])
+@login_required
+def upload_file():
+    try:
+        upload_files = request.files.getlist('file')
+        print('get files')
+        for files in upload_files:
+            if files and allowed_file(files.filename):
+                filename = secure_filename(files.filename)
+                uuid_filename = str(uuid.uuid1()).replace('-', '_')
+                file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], uuid_filename)
+                files.save(file_path)
+                size = os.path.getsize(file_path)
+                temp = File(name='{0}'.format(filename),
+                            path=file_path,
+                            size=size,
+                            owner=current_user._get_current_object(),
+                            uploaded_time=datetime.datetime.now())
+                db.session.add(temp)
+    except Exception, e:
+        print(e)
+    return redirect(url_for('main.task'))
+
+
+@main.route('/task', methods=['GET'])
 @login_required
 def task():
-    if request.method == 'GET':
-        pass
-    elif request.method == 'POST':
-        try:
-            upload_files = request.files.getlist('file')
-            print('get files')
-            for files in upload_files:
-                if files and allowed_file(files.filename):
-                    filename = secure_filename(files.filename)
-                    # filename = check_the_same_filename(filename)
-                    strings = files.stream.read()
-                    size = len(strings)
-                    temp = File(name='{0}'.format(filename),
-                                content=sqlite3.Binary(strings),
-                                size=size,
-                                owner=current_user._get_current_object(),
-                                uploaded_time=datetime.datetime.now())
-                    db.session.add(temp)
-        except Exception, e:
-            print(e)
-        return redirect(url_for('main.task'))
     return render_template('tasks.html')
 
 
 def get_online_machines():
     machines_info = []
-    for machine_addr in task_redis.keys():
-        data = task_redis.get(machine_addr)
+    for machine_addr in online_machines_redis.keys():
+        data = online_machines_redis.get(machine_addr)
         online_machine = FDM()
         temp = online_machine.parse_data_to_bootstrap_table(machine_addr, json.loads(data))
         machines_info.append(temp)
@@ -219,7 +222,7 @@ def online_machines():
 @main.route('/online_machine_state', methods=['POST'])
 def online_machine_state():
     if request.method == 'POST':
-        task_redis.set('{0}'.format(request.headers.environ['REMOTE_ADDR']), request.data, 7)
+        online_machines_redis.set('{0}'.format(request.headers.environ['REMOTE_ADDR']), request.data, 7)
         return jsonify()
 
 

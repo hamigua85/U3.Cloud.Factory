@@ -12,7 +12,7 @@ bootstrap = Bootstrap()
 mail = Mail()
 moment = Moment()
 db = SQLAlchemy(session_options={"autoflush": False})
-task_redis = Redis()
+online_machines_redis = Redis()
 
 
 login_manager = LoginManager()

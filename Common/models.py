@@ -239,7 +239,7 @@ class File(db.Model):
     __tablename__ = 'files'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), index=True)
-    content = db.Column(db.BLOB)
+    path = db.Column(db.String)
     size = db.Column(db.Float)
     owner_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     uploaded_time = db.Column(db.DateTime)

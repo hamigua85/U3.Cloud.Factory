@@ -97,7 +97,7 @@
         setInterval("myInterval()", 5000);
         var uploader = WebUploader.create({
             swf: 'static/webuploader-0.1.5/Uploader.swf',
-            server: '/task',
+            server: '/upload-file',
             pick: '#picker',
             resize: false,
             auto: true,
@@ -178,7 +178,7 @@
 
         $("#printBtn").click(function () {
             var files_id = getSelectionsFileId();
-            $.getJSON("/print-files", { files : files_id},
+            $.getJSON("/add-tasks", { files : files_id},
             function (data) { 
                 $('#table_file').bootstrapTable('load', data);
              });
