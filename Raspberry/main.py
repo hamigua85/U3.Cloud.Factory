@@ -40,11 +40,11 @@ def init_printer(machine_config):
                 current_machine.material = machine_config.getElementsByTagName("material")[0].firstChild.data
                 current_machine.material_color = \
                     machine_config.getElementsByTagName("material_color")[0].firstChild.data
-                current_machine.nozzle_size = int(machine_config.getElementsByTagName("nozzle_size")[0].firstChild.data)
+                current_machine.nozzle_size = float(machine_config.getElementsByTagName("nozzle_size")[0].firstChild.data)
                 current_machine.worked_time = int(machine_config.getElementsByTagName("worked_time")[0].firstChild.data)
                 break
         except Exception, e:
-            current_machine.state = State.SerialErr
+            current_machine.state = e
             print e
 
 
@@ -107,9 +107,6 @@ def send_cmd():
 def get_machine_state():
     global printer
     printer.send('M105')
-    current_machine.x_size = 100
-    current_machine.y_size = 100
-    current_machine.z_size = 100
     current_machine.online = printer.online
     return current_machine.__dict__
 
