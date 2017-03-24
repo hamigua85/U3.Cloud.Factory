@@ -45,7 +45,7 @@ def init_printer(machine_config):
                 break
         except Exception, e:
             current_machine.state = str(e)
-            print e
+            print str(e)
 
 
 @app.route("/reboot")
@@ -58,7 +58,7 @@ def init():
     global printer
     try:
         printer.disconnect()
-        init_printer()
+        init_printer(config_element)
         return jsonify()
     except Exception, e:
         return e
