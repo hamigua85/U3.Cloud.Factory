@@ -38,6 +38,10 @@ def algorithm_one(app):
             files = {'file': open(waiting_task.file.path, 'rb')}
             r = requests.post('http://{0}:{1}/{2}'.format(online_machines[0]['address'], 5001, 'start-task'),
                               files=files, timeout=10)
-            print r
+            if r.status_code == 200 and r.content == 'get file':
+                waiting_task.state = 'assigned'
+            else:
+                waiting_task.state = 'waiting'
+            db.session.commit()
     t = Timer(5, algorithm_one, args=(app,))
     t.start()

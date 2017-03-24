@@ -11,7 +11,7 @@ from Common.models import User, Role, Post, File, Task, Permission
 from Common.scheduler import get_online_machines, update_online_machine_state
 from app.decorators import admin_required
 
-from Common.machine import FDM, State
+from Common.machine import FDM
 
 
 ALLOWED_EXTENSIONS = set(['gcode'])
