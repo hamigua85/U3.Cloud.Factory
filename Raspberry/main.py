@@ -71,6 +71,7 @@ def start_task():
         task_file[0].save(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'task.gcode'))
         print "get file" + str(task_file[0].filename)
         current_machine.state = State.Working
+        current_machine.task_info = request.args['task_id']
         return jsonify()
     else:
         print "busy..."

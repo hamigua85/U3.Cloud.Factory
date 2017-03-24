@@ -36,14 +36,18 @@ def algorithm_one(app):
             waiting_task.state = 'preoperation'
             db.session.commit()
             files = {'file': open(waiting_task.file.path, 'rb')}
-            r = requests.post('http://{0}:{1}/{2}'.format(online_machines[0]['address'], 5001, 'start-task'),
+            r = requests.post('http://{0}:{1}/{2}?task_id={3}'.format(online_machines[0]['address'], 5001, 'start-task'.
+                                                                      waiting_task.id),
                               files=files, timeout=10)
             if r.status_code == 200:
                 r = requests.get('http://{0}:{1}/{2}'.format(online_machines[0]['address'], 5001, 'state'), timeout=10)
-                if r.status_code == 200:
+                if r.status_code == 200 and json.loads(eval(r.content))['state'] == State.Working:
                     waiting_task.state = 'assigned'
+                else:
+                    print 'fail to confirm remote machine state'
+                    # waiting_task.state = 'waiting'
             else:
-                waiting_task.state = 'waiting'
+                print 'fail to upload task file'
             db.session.commit()
     t = Timer(5, algorithm_one, args=(app,))
     t.start()
