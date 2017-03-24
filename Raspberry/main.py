@@ -70,7 +70,7 @@ def start_task():
         task_file = request.files.getlist('file')
         task_file[0].save(os.path.join(os.path.abspath(os.path.dirname(__file__)), task_file[0].filename))
         print "get file"
-        return jsonify('get file')
+        return jsonify()
     else:
         print "busy..."
         return jsonify('busy...')
