@@ -38,7 +38,7 @@ def algorithm_one(app):
             files = {'file': open(waiting_task.file.path, 'rb')}
             r = requests.post('http://{0}:{1}/{2}'.format(online_machines[0]['address'], 5001, 'start-task'),
                               files=files, timeout=10)
-            if r.status_code == 200 and r.content == 'get file':
+            if r.status_code == 200:
                 r = requests.get('http://{0}:{1}/{2}'.format(online_machines[0]['address'], 5001, 'state'), timeout=10)
                 if r.status_code == 200:
                     waiting_task.state = 'assigned'

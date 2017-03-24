@@ -44,7 +44,7 @@ def init_printer(machine_config):
                 current_machine.worked_time = int(machine_config.getElementsByTagName("worked_time")[0].firstChild.data)
                 break
         except Exception, e:
-            current_machine.state = e
+            current_machine.state = str(e)
             print e
 
 
