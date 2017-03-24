@@ -68,7 +68,7 @@ def init():
 def start_task():
     if current_machine.state is State.Ready:
         task_file = request.files.getlist('file')
-        task_file[0].save(os.path.join(os.path.abspath(os.path.dirname(__file__)), task_file[0].filename))
+        task_file[0].save(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'task.gcode'))
         print "get file" + str(task_file[0].filename)
         current_machine.state = State.Working
         return jsonify()
