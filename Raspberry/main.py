@@ -68,7 +68,7 @@ def init():
 def start_task():
     if current_machine.state is State.Ready:
         task_file = request.files.getlist('file')
-        task_file.save(os.path.join(os.path.abspath(os.path.dirname(__file__)), task_file.filename))
+        task_file[0].save(os.path.join(os.path.abspath(os.path.dirname(__file__)), task_file.filename))
         print "get file"
         return jsonify('get file')
     else:
