@@ -2,9 +2,12 @@
 import os, sys
 sys.path.append("/Volumes/OS_Application/Flask/U3/U3.Cloud.Factory")
 from app import create_app, db
-from Common.models import User, Role, Post
+from Common.models import User, Role, Post, Task
 from flask_script import Manager, Shell
 from flask_migrate import Migrate, MigrateCommand
+from Common.scheduler import *
+import threading
+
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 manager = Manager(app)
@@ -25,6 +28,7 @@ def test():
     tests = unittest.TestLoader().discover('tests')
     unittest.TextTestRunner(verbosity=2).run(tests)
 
-
 if __name__ == '__main__':
+    scheduler = threading.Thread(target=algorithm_one, args=(app,))
+    scheduler.start()
     manager.run()

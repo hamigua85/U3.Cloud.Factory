@@ -5,14 +5,12 @@ from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
 from config import config
 from flask_login import LoginManager
-from redis import Redis
 
 
 bootstrap = Bootstrap()
 mail = Mail()
 moment = Moment()
 db = SQLAlchemy(session_options={"autoflush": False})
-online_machines_redis = Redis()
 
 
 login_manager = LoginManager()

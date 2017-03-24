@@ -1,6 +1,6 @@
 from flask import render_template, redirect, url_for, abort, flash, request, jsonify, current_app
 import datetime, sqlite3, requests, os, threading
-import json, uuid
+import uuid
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 
@@ -8,10 +8,9 @@ from . import main
 from .forms import EditProfileForm, EditProfileAdminForm, PostForm
 from app import db
 from Common.models import User, Role, Post, File, Task, Permission
+from Common.scheduler import get_online_machines, update_online_machine_state
 from app.decorators import admin_required
 
-
-from app import online_machines_redis
 from Common.machine import FDM, State
 
 
@@ -197,16 +196,6 @@ def task():
     return render_template('tasks.html')
 
 
-def get_online_machines():
-    machines_info = []
-    for machine_addr in online_machines_redis.keys():
-        data = online_machines_redis.get(machine_addr)
-        online_machine = FDM()
-        temp = online_machine.parse_data_to_bootstrap_table(machine_addr, json.loads(data))
-        machines_info.append(temp)
-    return machines_info
-
-
 @main.route('/online-machines', methods=['GET', 'POST'])
 @login_required
 @admin_required
@@ -222,30 +211,6 @@ def online_machines():
 @main.route('/online_machine_state', methods=['POST'])
 def online_machine_state():
     if request.method == 'POST':
-        online_machines_redis.set('{0}'.format(request.headers.environ['REMOTE_ADDR']), request.data, 7)
-        return jsonify()
-
-
-def assign_task(waiting_task):
-    for machine in machines_info:
-        if machine['state'] == State.Ready and machine['online'] is True:
-            files = {'file': open(waiting_task.file.path, 'rb')}
-            r = requests.post('{0}/{1}'.format(machine.address, 'start-task'), files=files, timeout=10)
-            print r
-
-
-@main.route('/scheduler-tasks', methods=['POST'])
-def scheduler_tasks():
-    if request.method == 'POST':
-        machines_info = get_online_machines()
-        preoperation_task = Task.query.filter_by(state='preoperation').all()
-        if len(preoperation_task) == 0:
-            waiting_task = Task.query.filter_by(state='waiting').all()
-            if len(waiting_task) > 0:
-                for tasks in waiting_task:
-                    tasks.state = 'preoperation'
-                db.session.commit()
-                assign_thread = threading.Thread(target=assign_task, args=(waiting_task,))
-                assign_thread.start()
+        update_online_machine_state(request)
         return jsonify()
 

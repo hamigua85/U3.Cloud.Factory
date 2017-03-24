@@ -69,8 +69,10 @@ def start_task():
     if current_machine.state is State.Ready:
         upload_files = request.files.getlist('file')
         print "get file"
+        return jsonify('get file')
     else:
         print "busy..."
+        return jsonify('busy...')
 
 
 @app.route("/pause-task")
