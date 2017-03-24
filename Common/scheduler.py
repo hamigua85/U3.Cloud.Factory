@@ -39,7 +39,9 @@ def algorithm_one(app):
             r = requests.post('http://{0}:{1}/{2}'.format(online_machines[0]['address'], 5001, 'start-task'),
                               files=files, timeout=10)
             if r.status_code == 200 and r.content == 'get file':
-                waiting_task.state = 'assigned'
+                r = requests.get('http://{0}:{1}/{2}'.format(online_machines[0]['address'], 5001, 'state'), timeout=10)
+                if r.status_code == 200:
+                    waiting_task.state = 'assigned'
             else:
                 waiting_task.state = 'waiting'
             db.session.commit()

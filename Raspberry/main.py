@@ -69,7 +69,8 @@ def start_task():
     if current_machine.state is State.Ready:
         task_file = request.files.getlist('file')
         task_file[0].save(os.path.join(os.path.abspath(os.path.dirname(__file__)), task_file[0].filename))
-        print "get file"
+        print "get file" + str(task_file[0].filename)
+        current_machine.state = State.Working
         return jsonify()
     else:
         print "busy..."
@@ -93,9 +94,9 @@ def cancel_task():
         print "not working..."
 
 
-@app.route("/state")
+@app.route("/state", methods=['GET'])
 def state():
-    return get_machine_state()
+    return jsonify(state=get_machine_state())
 
 
 @app.route("/send-cmd", methods=['POST'])
