@@ -127,6 +127,7 @@ def send_machine_state():
     finally:
         t = Timer(5, send_machine_state)
         t.start()
+        pass
 
 
 if __name__ == "__main__":
