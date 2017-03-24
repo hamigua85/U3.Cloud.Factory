@@ -96,7 +96,7 @@ def cancel_task():
 
 @app.route("/state", methods=['GET'])
 def state():
-    return jsonify(state=json.dumps(get_machine_state()))
+    return jsonify(json.dumps(get_machine_state()))
 
 
 @app.route("/send-cmd", methods=['POST'])
