@@ -9,6 +9,10 @@ for item in sys.path:
 from printrun.printcore import printcore
 from printrun import gcoder
 import xml.etree.ElementTree as ET
+import socket
+
+myname = socket.getfqdn(socket.gethostname())
+myaddr = socket.gethostbyname(myname)
 
 printer = None
 tree = ET.parse(os.path.abspath(os.path.dirname(__file__)) + '/config.xml')
@@ -128,6 +132,7 @@ def get_machine_state():
     global printer
     printer.send('M105')
     current_machine.online = printer.online
+    current_machine.address = myaddr
     return current_machine.__dict__
 
 

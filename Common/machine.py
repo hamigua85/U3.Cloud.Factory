@@ -58,11 +58,13 @@ class Machine:
         pass
 
     def machine_base_info_to_bootstrap_table(self):
-        return 'type : {0}<br>' \
-               'material : {1}<br>' \
-               'material_color : {2}<br>' \
-               'x*y*z(mm) : {3}*{4}*{5}<br>'.format(self.type, self.material, self.material_color,
-                                                    self.x_size, self.y_size, self.z_size)
+        return 'address : {0}<br>' \
+               'type : {1}<br>' \
+               'material : {2}<br>' \
+               'material_color : {3}<br>'' \
+               ''x*y*z(mm) : {4}*{5}*{6}<br>'.format(self.address, self.type, self.material,
+                                                     self.material_color, self.x_size,
+                                                     self.y_size, self.z_size)
 
 
 class FDM(Machine):
