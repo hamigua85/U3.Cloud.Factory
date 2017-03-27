@@ -143,9 +143,11 @@ def send_cmd():
 def get_machine_state():
     global printer
     printer.send('M105')
+    progress = 0
+    if printer.priqueue.qsize() != 0:
+        progress = str(printer.lineno)/str(printer.priqueue.qsize())
     current_machine.task_info = 'task_id : {0}<br>' \
-                                'task_state : {1}/{2}%'.format(current_machine.task_id, str(printer.lineno),
-                                                               str(printer.priqueue.qsize()))
+                                'task_state : {1}%'.format(current_machine.task_id, progress)
     current_machine.online = printer.online
     current_machine.address = myaddr
     return current_machine.__dict__
