@@ -56,6 +56,7 @@ class Machine:
         self.state = None
         self.worked_time = None
         self.task_info = None
+        self.task_id = None
         pass
 
     def machine_base_info_to_bootstrap_table(self):
