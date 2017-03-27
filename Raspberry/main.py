@@ -143,7 +143,6 @@ def send_cmd():
 def get_machine_state():
     global printer
     printer.send('M105')
-    current_machine.task_info = current_machine.task_info.replace('')
     current_machine.task_info = 'task_id : {0}<br>' \
                                 'task_state : {1}/{2}%'.format(current_machine.task_id, str(printer.lineno),
                                                                str(len(printer.mainqueue)))
