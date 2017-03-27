@@ -70,9 +70,9 @@
         $.getJSON("/tasks-info", { cmd: 'task_info'},
         function (data) { 
             $('#table_printing').bootstrapTable('load', data);
-            $('#table_printing').bootstrapTable('filterBy', {state: 'printing'});
+            $('#table_printing').bootstrapTable('filterBy', {state: 'assigned'});
             $('#table_wait').bootstrapTable('load', data);
-            $('#table_wait').bootstrapTable('filterBy', {state: 'waiting'});
+            $('#table_wait').bootstrapTable('filterBy', {state: 'waiting', state: 'preoperation'});
          });
     }
 	$(function() {
@@ -327,6 +327,11 @@
             }, {
                 field: 'start',
                 title: 'start',
+                align: 'center',
+                halign: 'center'
+            }, {
+                field: 'state',
+                title: 'state',
                 align: 'center',
                 halign: 'center'
             }, {

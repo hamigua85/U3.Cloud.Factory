@@ -1,8 +1,9 @@
-<?xml version="1.0"?>
 <config>
     <type>FDM</type>
-    <task_id></task_id>
-    <task_state></task_state>
+    <task_id />
+    <task_state />
+    <currentline />
+    <totalline />
     <x>100</x>
     <y>100</y>
     <z>100</z>

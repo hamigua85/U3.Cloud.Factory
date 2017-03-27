@@ -2,9 +2,11 @@
   <dictionary name="peng">
     <words>
       <w>baudrate</w>
+      <w>gcode</w>
       <w>scheuler</w>
       <w>taskbase</w>
       <w>tempcb</w>
+      <w>totallines</w>
     </words>
   </dictionary>
 </component>
