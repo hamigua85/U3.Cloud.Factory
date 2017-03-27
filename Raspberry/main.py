@@ -145,7 +145,7 @@ def get_machine_state():
     printer.send('M105')
     current_machine.task_info = 'task_id : {0}<br>' \
                                 'task_state : {1}/{2}%'.format(current_machine.task_id, str(printer.lineno),
-                                                               str(len(printer.priqueue)))
+                                                               str(25))
     current_machine.online = printer.online
     current_machine.address = myaddr
     return current_machine.__dict__
