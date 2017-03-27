@@ -93,11 +93,12 @@ def start_task():
         task_file[0].save(task_path)
         print "get file" + str(task_file[0].filename)
         current_machine.state = State.Working
-        current_machine.task_info = request.args['task_id']
-        updata_config('task_id', request.args['task_id'])
         totallines = len(open(task_path).readlines())
         updata_config('currentline', '0')
         updata_config('totalline', str(totallines))
+        current_machine.task_info = 'task_id : {0}<br>' \
+                                    'task_state : {1}%'.format(request.args['task_id'], '00.00')
+        updata_config('task_id', request.args['task_id'])
         gcode = [i.strip() for i in open(task_path)]
         gcode = gcoder.LightGCode(gcode)
         printer.startprint(gcode)
@@ -141,6 +142,9 @@ def send_cmd():
 def get_machine_state():
     global printer
     printer.send('M105')
+    current_machine.task_info = 'task_id : {0}<br>' \
+                                'task_state : {1}/{2}%'.format(request.args['task_id'], str(printer.lineno),
+                                                               str(len(printer.mainqueue)))
     current_machine.online = printer.online
     current_machine.address = myaddr
     return current_machine.__dict__

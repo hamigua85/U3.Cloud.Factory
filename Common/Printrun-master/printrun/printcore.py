@@ -216,7 +216,7 @@ class printcore():
                     self.printer = None
                     return
             self.stop_read_thread = False
-            self.read_thread = threading.Thread(target = self._listen)
+            self.read_thread = threading.Thread(target=self._listen)
             self.read_thread.start()
             self._start_sender()
 

@@ -32,6 +32,7 @@ def algorithm_one(app):
         if waiting_task is not None:
             online_machines = get_online_machines(State.Ready)
             while len(online_machines) == 0:
+                time.sleep(5)
                 online_machines = get_online_machines(State.Ready)
             waiting_task.state = 'preoperation'
             db.session.commit()
@@ -43,6 +44,9 @@ def algorithm_one(app):
                 r = requests.get('http://{0}:{1}/{2}'.format(online_machines[0]['address'], 5001, 'state'), timeout=60)
                 if r.status_code == 200 and json.loads(eval(r.content))['state'] == State.Working:
                     waiting_task.state = 'assigned'
+                    waiting_task.machine_info = \
+                        str(waiting_task.machine_info).replace('address : None',
+                                                               'address : {0}'.format(online_machines[0]['address']))
                 else:
                     print 'fail to confirm remote machine state'
                     # waiting_task.state = 'waiting'
