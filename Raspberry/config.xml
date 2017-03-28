@@ -1,5 +1,6 @@
 <config>
     <type>FDM</type>
+    <state></state>
     <task_id />
     <task_state />
     <currentline />

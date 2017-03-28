@@ -22,7 +22,11 @@ def get_ip_address(ifname):
         struct.pack('256s', ifname[:15])
     )[20:24])
 
-myaddr = get_ip_address('eth0')
+try:
+    myaddr = get_ip_address('eth0')
+except Exception, e:
+    myaddr = None
+    print e
 
 printer = None
 tree = ET.parse(os.path.abspath(os.path.dirname(__file__)) + '/config.xml')
@@ -30,7 +34,7 @@ root = tree.getroot()
 
 app = Flask(__name__)
 
-current_machine = FDM(state=State.Fault)
+current_machine = FDM(state=State.Initing)
 
 
 def parse_temperature(line):
@@ -48,13 +52,24 @@ def init_printer(machine_config):
     global printer
     for index in range(0, 3):
         try:
+            # read config file init serialport
             serial_to_usb = machine_config.find('serialport').text
             baudrate = machine_config.find('baudrate').text
-            printer = printcore("{0}{1}".format(serial_to_usb, index), int(baudrate))
-            print printer
-            if printer.printer is not None:
-                printer.tempcb = parse_temperature
+
+            # read config file init machine state
+            if machine_config.find('state').text is not None:
+                current_machine.state = machine_config.find('state').text
+            else:
                 current_machine.state = State.Ready
+
+            # init printcore
+            printer = printcore("{0}{1}".format(serial_to_usb, index), int(baudrate))
+
+            if printer.printer is not None:
+                # set callback func
+                printer.tempcb = parse_temperature
+
+                # read config file init current_machine
                 current_machine.x_size = int(machine_config.find('x').text)
                 current_machine.y_size = int(machine_config.find('y').text)
                 current_machine.z_size = int(machine_config.find('z').text)
@@ -77,32 +92,48 @@ def reboot():
 def init():
     global printer
     try:
+        current_machine.state = State.Ready
         printer.disconnect()
         init_printer(root)
         return jsonify()
     except Exception, e:
-        return e
+        return jsonify(e)
 
 
 @app.route("/start-task", methods=['POST'])
 def start_task():
     global printer
+
     task_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'task.gcode')
+
     if current_machine.state is State.Ready:
+        # receive gcode file which send from Server, and save to task_path
         task_file = request.files.getlist('file')
         task_file[0].save(task_path)
+
         print "get file" + str(task_file[0].filename)
-        current_machine.state = State.Working
+
+        # read task_path file
         totallines = len(open(task_path).readlines())
+
+        # write task_id, currentline and totalline into config file
         updata_config('currentline', '0')
         updata_config('totalline', str(totallines))
+        updata_config('task_id', request.args['task_id'])
+
+        # update current_machine info
         current_machine.task_info = 'task_id : {0}<br>' \
                                     'task_state : {1}%'.format(request.args['task_id'], '00.00')
-        updata_config('task_id', request.args['task_id'])
+
         current_machine.task_id = request.args['task_id']
+
+        # start print gcode file
         gcode = [i.strip() for i in open(task_path)]
         gcode = gcoder.LightGCode(gcode)
         printer.startprint(gcode)
+
+        # update machine state to working
+        current_machine.state = State.Working
         return jsonify()
     else:
         print "busy..."
@@ -142,7 +173,9 @@ def send_cmd():
 
 def get_machine_state():
     global printer
+
     printer.send('M105')
+
     progress = 0
     if printer.priqueue.qsize() != 0:
         progress = round((int(printer.lineno)/int(printer.priqueue.qsize())) * 100.0, 2)
@@ -150,6 +183,8 @@ def get_machine_state():
                                 'task_state : {1}%'.format(current_machine.task_id, progress)
     current_machine.online = printer.online
     current_machine.address = myaddr
+    if printer.lineno != 0 and printer.lineno >= printer.priqueue.qsize():
+        current_machine.state = State.Done
     return current_machine.__dict__
 
 

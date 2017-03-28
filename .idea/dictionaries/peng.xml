@@ -2,7 +2,11 @@
   <dictionary name="peng">
     <words>
       <w>baudrate</w>
+      <w>configpath</w>
       <w>gcode</w>
+      <w>ifname</w>
+      <w>initing</w>
+      <w>myaddr</w>
       <w>scheuler</w>
       <w>taskbase</w>
       <w>tempcb</w>

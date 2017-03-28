@@ -1,3 +1,6 @@
+import os
+
+
 class State:
     def __init__(self):
         pass
@@ -8,6 +11,7 @@ class State:
     Done = 'done'
     Fault = 'fault'
     SerialErr = 'SerialErr'
+    Initing = 'Initing'
 
 
 class Type:
@@ -100,3 +104,4 @@ class FDM(Machine):
                 setattr(self, item, data[item])
         self.address = addr
         return self.__dict__
+
