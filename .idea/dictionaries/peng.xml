@@ -2,6 +2,7 @@
   <dictionary name="peng">
     <words>
       <w>baudrate</w>
+      <w>btns</w>
       <w>configpath</w>
       <w>gcode</w>
       <w>ifname</w>
@@ -10,6 +11,7 @@
       <w>scheuler</w>
       <w>taskbase</w>
       <w>tempcb</w>
+      <w>thelist</w>
       <w>totallines</w>
     </words>
   </dictionary>

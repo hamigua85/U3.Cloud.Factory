@@ -2,6 +2,51 @@
 
 {% block title %}UNITY 3D{% endblock %}
 {% block page_content %}
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        Choose Machine
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <label>Machine</label>
+                    <select class="form-control" id="machine_type">
+                        <option>FDM</option>
+                    </select>
+                    <label style="margin-top: 20px">Material</label>
+                    <select class="form-control" id="machine_material">
+                        <option>PLA</option>
+                    </select>
+                    <label style="margin-top: 20px">Material Color</label>
+                    <select class="form-control" id="material_color">
+                        <option>white</option>
+                    </select>
+                    <label style="margin-top: 20px">TaskNum</label>
+                    <select class="form-control" id="task_num">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                        <option>6</option>
+
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消
+                    </button>
+                    <button id="upload_task" type="button" class="btn btn-primary">
+                        提交任务
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
     <div class="page-header">
         {% if current_user.is_authenticated %}
             <span class="chart" data-percent="86">
@@ -30,7 +75,7 @@
                         <div class="btns">
                             <div id="picker" style="float:left;">上传文件</div>
                             <button id="deleteBtn" class="btn btn btn-danger" style="float:left;">删除文件</button>
-                            <button id="printBtn" class="btn btn btn-success" style="float:left; margin-left: 10px">上传任务</button>
+                            <button id="assigntaskBtn" class="btn btn btn-success" data-toggle="modal" data-target="#myModal" style="float:left; margin-left: 10px">上传任务</button>
                         </div>
                     </div>
                 </div>
@@ -168,6 +213,15 @@
             return files;
         }
 
+        function getMachineInfo() {
+            var machine_info = new Array();
+            machine_info['machine_type'] =  $('#machine_type').val()
+            machine_info['material'] = $('#machine_material').val()
+            machine_info['color'] = $('#material_color').val()
+            machine_info['task_num'] = $('#task_num').val()
+            return machine_info;
+        }
+
         $("#deleteBtn").click(function () {
             var files = getSelectionsFileName();
             $.getJSON("/delete-files", { files : files},
@@ -176,12 +230,20 @@
              });
         });
 
-        $("#printBtn").click(function () {
-            var files_id = getSelectionsFileId();
-            $.getJSON("/add-tasks", { files : files_id},
-            function (data) { 
-                $('#table_file').bootstrapTable('load', data);
-             });
+        $("#upload_task").click(function () {
+            var files_id;
+            var machine_info;
+            try {
+                files_id = getSelectionsFileId();
+                machine_info = getMachineInfo();
+                $.getJSON("/add-tasks", { files : files_id, machine_info : machine_info},
+                function (data) { 
+                    var i = data;
+                 });
+            }
+            catch(err) {
+                alert(err)
+            }
         });
 
         $('#table_file').bootstrapTable({
