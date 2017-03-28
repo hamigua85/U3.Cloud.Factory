@@ -178,13 +178,15 @@ def get_machine_state():
 
     progress = 0
     if int(printer.priqueue.qsize()) != 0:
-        progress = round((int(printer.lineno)/int(printer.priqueue.qsize())) * 100.0, 2)
+        progress = round((float(printer.lineno)/float(printer.priqueue.qsize())) * 100.0, 2)
     current_machine.task_info = 'task_id : {0}<br>' \
                                 'task_state : {1}%'.format(current_machine.task_id, progress)
     current_machine.online = printer.online
     current_machine.address = myaddr
     if printer.lineno != 0 and printer.lineno >= printer.priqueue.qsize():
         current_machine.state = State.Done
+        current_machine.task_info = 'task_id : {0}<br>' \
+                                    'task_state : {1}%'.format(current_machine.task_id, '100')
     return current_machine.__dict__
 
 
