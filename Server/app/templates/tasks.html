@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}UNITY 3D{% endblock %}
+{% block title %}UNITY 3D - Tasks{% endblock %}
 {% block page_content %}
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -49,10 +49,61 @@
     </div>
     <div class="page-header">
         {% if current_user.is_authenticated %}
-            <span class="chart" data-percent="86">
-                <span class="percent"></span>
-            </span>
-            <span class="btn js_update">Update chart</span>
+            <div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title" style="font-size: x-large;">
+                            <i class="fa fa-file-text"></i>
+                            Files
+                        </h3>
+                    </div>
+                    <div class="panel-body">
+                        <div id="thelist" class="uploader-list"></div>
+                        <table id="table_file"></table>
+                        <div id="toolbar" style="float:left;" >
+                            <div id="uploader">
+                                <div class="btns">
+                                    <div id="picker" style="float:left;">
+                                        <i class="fa fa-cloud-upload"></i>
+                                        上传文件</div>
+                                    <button id="deleteBtn" class="btn btn btn-danger" style="float:left;">
+                                        <i class="fa fa-remove"></i>
+                                        删除文件</button>
+                                    <button id="assigntaskBtn" class="btn btn btn-success" data-toggle="modal" data-target="#myModal" style="float:left; margin-left: 10px">
+                                        <i class="fa fa-calendar"></i>
+                                        上传任务</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title" style="font-size: x-large;">
+                            <i class="fa fa-tasks"></i>
+                            Task Printing
+                        </h3>
+                    </div>
+                    <div class="panel-body">
+                        <table id="table_printing"></table>
+                        <div id="toolbar" style="float:left;" >
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title" style="font-size: x-large;">
+                            <i class="fa fa-tasks"></i>
+                            Task Waiting
+                        </h3>
+                    </div>
+                    <div class="panel-body">
+                        <table id="table_wait"></table>
+                        <div id="toolbar" style="float:left;" >
+                        </div>
+                    </div>
+                </div>
+            </div>
         {% else %}
             <h2>Welcome to Unity3D Cloud Factory.</h2>
             <p>
@@ -62,52 +113,11 @@
             </p>
         {% endif %}
     </div>
-    <div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title text-center" style="font-size: x-large;">files</h3>
-            </div>
-            <div class="panel-body">
-                <div id="thelist" class="uploader-list"></div>
-                <table id="table_file"></table>
-                <div id="toolbar" style="float:left;" >
-                    <div id="uploader">
-                        <div class="btns">
-                            <div id="picker" style="float:left;">上传文件</div>
-                            <button id="deleteBtn" class="btn btn btn-danger" style="float:left;">删除文件</button>
-                            <button id="assigntaskBtn" class="btn btn btn-success" data-toggle="modal" data-target="#myModal" style="float:left; margin-left: 10px">上传任务</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title text-center" style="font-size: x-large;">task-printing</h3>
-            </div>
-            <div class="panel-body">
-                <table id="table_printing"></table>
-                <div id="toolbar" style="float:left;" >
-                </div>
-            </div>
-        </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title text-center" style="font-size: x-large;">task-waiting</h3>
-            </div>
-            <div class="panel-body">
-                <table id="table_wait"></table>
-                <div id="toolbar" style="float:left;" >
-                </div>
-            </div>
-        </div>
-    </div>
 {% endblock %}
 
 {% block scripts %}
     {{ super() }}
     <script src="{{ url_for('static', filename='jquery-2.0.3.min.js') }}"></script>
-	<script src="{{ url_for('static', filename='jquery.easypiechart.js') }}"></script>
     <script src="{{ url_for('static', filename='bootstrap-table.js') }}"></script>
     <script src="{{ url_for('static', filename='webuploader-0.1.5/webuploader.js') }}"></script>
 	<script>
@@ -115,29 +125,9 @@
         $.getJSON("/tasks-info", { cmd: 'task_info'},
         function (data) { 
             $('#table_printing').bootstrapTable('load', data);
-            $('#table_printing').bootstrapTable('filterBy', {state: 'assigned'});
             $('#table_wait').bootstrapTable('load', data);
-            $('#table_wait').bootstrapTable('filterBy', {state: 'waiting', state: 'preoperation'});
          });
     }
-	$(function() {
-		$('.chart').easyPieChart({
-            lineCap: 'butt',
-            lineWidth: 20,
-            trackWidth: 16,
-            trackColor: '#ace',
-            scaleColor: false,
-            size:110,
-            onStep: function (from, to, percent_1) {
-                this.el.children[0].innerHTML = Math.round(percent_1*2.4) + "\xb0C";
-            }
-		});
-		var chart = window.chart = $('.chart').data('easyPieChart');
-		$('.js_update').on('click', function() {
-			chart.update(Math.random()*100);
-		});
-	});
-
     $(window).ready(function () {
         setInterval("myInterval()", 5000);
         var uploader = WebUploader.create({
@@ -296,6 +286,7 @@
             }
         });
         $('#table_printing').bootstrapTable({
+            url:'/tasks-info',
             search:true,
             showRefresh:true,
             pagination:true,
@@ -353,9 +344,14 @@
                 halign: 'center'
             }],
             onRefresh: function () {
+
+            },
+            onLoadSuccess: function () {
+                 $('#table_printing').bootstrapTable('filterBy', {state: 'assigned'});
             }
         });
         $('#table_wait').bootstrapTable({
+            url:'/tasks-info',
             search:true,
             showRefresh:true,
             pagination:true,
@@ -408,6 +404,10 @@
                 halign: 'center'
             }],
             onRefresh: function () {
+
+            },
+            onLoadSuccess: function () {
+                 $('#table_wait').bootstrapTable('filterBy', {state: 'waiting', state: 'preoperation'});
             }
         });
         })

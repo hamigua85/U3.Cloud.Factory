@@ -3,10 +3,18 @@
 {% import "_macros.html" as macros %}
 
 {% block title %}Unity 3D{% endblock %}
-
 {% block page_content %}
 <div class="page-header">
-    <h1>Hello, {% if current_user.is_authenticated %}{{ current_user.username }}{% else %}Stranger{% endif %}!</h1>
+    <div style="width:450px; display: inline-block">
+        <canvas id="chart-area1" style="color: black"/>
+    </div>
+    <div style="width:40%; display: inline-block; margin-left: 60px">
+        <div id="vmap" style="width: 600px; height: 445px; text-align: center">
+            <span style="font-size: 28px;font-weight: bold;">Machine Location</span></div>
+    </div>
+    {% if current_user.is_authenticated %}
+
+    {% endif %}
 </div>
 <div>
     {% if current_user.can(Permission.WRITE_ARTICLES) %}
@@ -19,4 +27,86 @@
     {{ macros.pagination_widget(pagination, '.index') }}
 </div>
 {% endif %}
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script src="{{ url_for('static', filename='Chart.js-2.5.0/dist/Chart.bundle.js') }}"></script>
+<script src="{{ url_for('static', filename='Chart.js-2.5.0/dist/utils.js') }}"></script>
+
+<script src="{{ url_for('static', filename='jqvmap/dist/jquery.vmap.js') }}"></script>
+<script src="{{ url_for('static', filename='jqvmap/dist/maps/jquery.vmap.world.js') }}"></script>
+<script src="{{ url_for('static', filename='jqvmap/examples/js/jquery.vmap.sampledata.js') }}"></script>
+<script>
+
+    jQuery(document).ready(function () {
+    var randomScalingFactor = function() {
+            return Math.round(Math.random() * 100);
+        };
+
+    var config = {
+        type: 'pie',
+        data: {
+            datasets: [{
+                data: [
+                    randomScalingFactor(),
+                    randomScalingFactor(),
+                    randomScalingFactor(),
+                    randomScalingFactor(),
+                ],
+                backgroundColor: [
+                    window.chartColors.yellow,
+                    window.chartColors.blue,
+                    window.chartColors.orange,
+                    window.chartColors.red,
+                ],
+                label: 'Dataset 1'
+            }],
+            labels: [
+                "ready",
+                "working",
+                "done",
+                "fault"
+            ]
+        },
+        options: {
+            responsive: true,
+            title: {
+                display: true,
+                fontSize: 28,
+                text: 'Online Machine Status',
+                fontColor: '#000'
+            }
+        }
+    };
+    var ctx1 = document.getElementById("chart-area1").getContext("2d");
+    var piechart_online_machines = new Chart(ctx1, config);
+
+    function escapeXml(string) {
+        return string.replace(/[<>]/g, function (c) {
+        switch (c) {
+            case '<': return '\u003c';
+            case '>': return '\u003e';
+        }
+        });
+    }
+    var pins = {
+      cn: escapeXml('<div id="heartbeat" class="red" style="text-align: center;"><span style="font-size: 40px; color: yellow">•</span></div>')
+    };
+    var i = jQuery('#vmap').vectorMap({
+        map: 'world_en',
+        backgroundColor: null,
+        color: '#ffffff',
+        hoverOpacity: 0.7,
+        selectedColor: '#666666',
+        enableZoom: false,
+        showTooltip: true,
+        scaleColors: ['#C8EEFF', '#006491'],
+        values: sample_data,
+        normalizeFunction: 'polynomial',
+        pins: pins,
+        pinMode: 'content'
+    });
+    });
+    $("#heartbeat").css({"-webkit-animation":"twinkling 1s infinite ease-in-out"});
+</script>
 {% endblock %}

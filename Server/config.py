@@ -31,6 +31,7 @@ class DevelopmentConfig(Config):
     SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
         'sqlite:///' + os.path.join(basedir, 'data-dev.sqlite')
     UPLOAD_FOLDER = os.path.abspath(os.curdir) + '/upload_files'
+    BOOTSTRAP_SERVE_LOCAL = True
 
 
 class TestingConfig(Config):

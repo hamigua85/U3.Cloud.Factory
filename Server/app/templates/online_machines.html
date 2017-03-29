@@ -1,9 +1,30 @@
 {% extends "base.html" %}
-{% block title %}UNITY 3D{% endblock %}
+{% block title %}UNITY 3D - OnlineMachines{% endblock %}
 {% block page_content %}
     <div class="page-header">
         {% if current_user.is_authenticated %}
-            <h3>Welcome,{{ current_user.username }}!</h3>
+            {% include '_chart_machines.html' %}
+            <div class="panel panel-default" style="margin-top: 40px">
+                <div class="panel-heading">
+                    <h3 class="panel-title" style="font-size: x-large;">
+                        <i class="fa fa-sitemap"></i>
+                        Online Machines
+                    </h3>
+                </div>
+                <div class="panel-body">
+                    <table id="online_machine_table"></table>
+                    <div id="toolbar" >
+                        <button id="initBtn" class="btn btn-primary">
+                            <i class="glyphicon glyphicon-ok-circle"></i>
+                            Initalize
+                        </button>
+                        <button id="rebootBtn" class="btn btn-danger">
+                            <i class="glyphicon glyphicon-repeat"></i>
+                            Reboot
+                        </button>
+                    </div>
+                </div>
+            </div>
         {% else %}
             <h2>Welcome to Unity3D Cloud Factory.</h2>
             <p>
@@ -13,24 +34,88 @@
             </p>
         {% endif %}
     </div>
-    <table id="table"></table>
 {% endblock %}
 
 {% block scripts %}
     {{ super() }}
+    <script src="{{ url_for('static', filename='jquery.easypiechart.js') }}"></script>
     <script src="{{ url_for('static', filename='bootstrap-table.js') }}"></script>
 	<script>
     function myInterval(){
         $.getJSON("/online-machines", { cmd: 'machine_info'},
         function (data) { 
             $('#table').bootstrapTable('load', data);
+            var total_machines = 0;
+            var ready_machines = 0;
+            var assigned_machines = 0;
+            var fault_machines = 0;
+            total_machines = data.length;
+            for(var i = 0;i<data.length;i++){
+                if(data[i]['state'] == 'ready'){
+                    ready_machines++;
+                }
+                else if(data[i]['state'] == 'assigned'){
+                    assigned_machines++;
+                }
+                else {
+                    fault_machines++;
+                }
+            }
+            $('.chart_ready').data('easyPieChart').update(Math.random()*100);
+            $('.chart_assigned').data('easyPieChart').update(Math.random()*100);
+            $('.chart_fault').data('easyPieChart').update(Math.random()*100);
          });
     }
+
+    $(function() {
+        $('.chart_ready').easyPieChart({
+            lineCap: 'butt',
+            lineWidth: 40,
+            trackWidth: 32,
+            trackColor: '#ace',
+            scaleColor: false,
+            size:280,
+            onStep: function (from, to, percent_1) {
+                this.el.children[0].innerHTML = Math.round(percent_1) + "%";
+            }
+        });
+        $('.chart_assigned').easyPieChart({
+            lineCap: 'butt',
+            lineWidth: 40,
+            trackWidth: 32,
+            trackColor: '#ace',
+            scaleColor: false,
+            size:280,
+            onStep: function (from, to, percent_1) {
+                this.el.children[0].innerHTML = Math.round(percent_1) + "%";
+            }
+        });
+        $('.chart_fault').easyPieChart({
+            lineCap: 'butt',
+            lineWidth: 40,
+            trackWidth: 32,
+            trackColor: '#ace',
+            scaleColor: false,
+            size:280,
+            onStep: function (from, to, percent_1) {
+                this.el.children[0].innerHTML = Math.round(percent_1) + "%";
+            }
+        });
+    });
 
     $(window).ready(function () {
         setInterval("myInterval()", 5000);
 
-        $('#table').bootstrapTable({
+        function getSelectionMahineAddrs() {
+            var addrs =  $('#online_machine_table').bootstrapTable('getAllSelections');
+            var address = []
+            for(var i =0;i<addrs.length - 1;i++){
+                address.append(addrs[i]['address']);
+            }
+            return address;
+        }
+
+        $('#online_machine_table').bootstrapTable({
             url:'/online-machines?cmd=machine_info',
             search:true,
             showRefresh:true,
@@ -38,6 +123,7 @@
             pageNumber:1,
             pageSize:10,
             pageList: [10, 25, 50, 100],
+            toolbar: '#toolbar',
             columns: [
             {
                 checkbox: true
@@ -82,17 +168,17 @@
                 halign: 'center'
             }, {
                 field: 'x_size',
-                title: 'x(mm)',
+                title: 'x',
                 align: 'center',
                 halign: 'center'
             }, {
                 field: 'y_size',
-                title: 'y(mm)',
+                title: 'y',
                 align: 'center',
                 halign: 'center'
             }, {
                 field: 'z_size',
-                title: 'z(mm)',
+                title: 'z',
                 align: 'center',
                 halign: 'center'
             }, {
@@ -107,7 +193,7 @@
                 halign: 'center'
             }, {
                 field: 'nozzle_size',
-                title: 'nozzle(mm)',
+                title: 'nozzle',
                 align: 'center',
                 halign: 'center'
             },{
