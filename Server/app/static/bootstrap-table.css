@@ -17,6 +17,7 @@
 .bootstrap-table .table:not(.table-condensed) > thead > tr > td,
 .bootstrap-table .table:not(.table-condensed) > tbody > tr > td,
 .bootstrap-table .table:not(.table-condensed) > tfoot > tr > td {
+    vertical-align: middle;
     padding: 8px;
 }
 
@@ -303,4 +304,8 @@ div.fixed-table-scroll-outer {
     width: 200px;
     height: 150px;
     overflow: hidden;
+}
+
+.bs-checkbox{
+
 }

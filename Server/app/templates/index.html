@@ -10,7 +10,7 @@
     </div>
     <div style="width:40%; display: inline-block; margin-left: 60px">
         <div id="vmap" style="width: 600px; height: 445px; text-align: center">
-            <span style="font-size: 28px;font-weight: bold;">Machine Location</span></div>
+            <span style="font-size: 28px;font-weight: bold; color: black">Machine Location</span></div>
     </div>
     {% if current_user.is_authenticated %}
 
@@ -90,7 +90,8 @@
         });
     }
     var pins = {
-      cn: escapeXml('<div id="heartbeat" class="red" style="text-align: center;"><span style="font-size: 40px; color: yellow">•</span></div>')
+      cn: escapeXml('<div id="heartbeat" class="red" style="text-align: center; position: absolute; ">' +
+              '<span style="font-size: 40px; color: yellow; ">•</span></div>')
     };
     var i = jQuery('#vmap').vectorMap({
         map: 'world_en',

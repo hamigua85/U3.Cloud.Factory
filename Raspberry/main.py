@@ -177,10 +177,13 @@ def get_machine_state():
     printer.send('M105')
 
     progress = 0
-    if int(printer.priqueue.qsize()) != 0:
-        progress = round((float(printer.lineno)/float(printer.priqueue.qsize())) * 100.0, 2)
-    current_machine.task_info = 'task_id : {0}<br>' \
-                                'task_state : {1}%'.format(current_machine.task_id, progress)
+    try:
+        if float(printer.priqueue.qsize()) != 0:
+            progress = round((float(printer.lineno)/float(printer.priqueue.qsize())) * 100.0, 2)
+        current_machine.task_info = 'task_id : {0}<br>' \
+                                    'task_state : {1}%'.format(current_machine.task_id, progress)
+    except Exception, e:
+        print e
     current_machine.online = printer.online
     current_machine.address = myaddr
     if printer.lineno != 0 and printer.lineno >= printer.priqueue.qsize():

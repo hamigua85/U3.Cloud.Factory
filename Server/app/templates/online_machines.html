@@ -3,7 +3,7 @@
 {% block page_content %}
     <div class="page-header">
         {% if current_user.is_authenticated %}
-            {% include '_chart_machines.html' %}
+            {% include '_machine_dashboard.html' %}
             <div class="panel panel-default" style="margin-top: 40px">
                 <div class="panel-heading">
                     <h3 class="panel-title" style="font-size: x-large;">
@@ -15,11 +15,11 @@
                     <table id="online_machine_table"></table>
                     <div id="toolbar" >
                         <button id="initBtn" class="btn btn-primary">
-                            <i class="glyphicon glyphicon-ok-circle"></i>
+                            <i class="fa fa-spinner"></i>
                             Initalize
                         </button>
                         <button id="rebootBtn" class="btn btn-danger">
-                            <i class="glyphicon glyphicon-repeat"></i>
+                            <i class="fa fa-repeat"></i>
                             Reboot
                         </button>
                     </div>
@@ -40,7 +40,15 @@
     {{ super() }}
     <script src="{{ url_for('static', filename='jquery.easypiechart.js') }}"></script>
     <script src="{{ url_for('static', filename='bootstrap-table.js') }}"></script>
+    <script src="{{ url_for('static', filename='jQuery-Knob/dist/jquery.knob.min.js') }}"></script>
 	<script>
+    window.operateEvents = {
+        'click .edit_machine': function (e, value, row, index) {
+            $('#myModalLabel').text("Machine Address-" + row['address']);
+            $('#myModal').modal('show');
+            //alert('You click like icon, row: ' + JSON.stringify(row));
+        }
+    };
     function myInterval(){
         $.getJSON("/online-machines", { cmd: 'machine_info'},
         function (data) { 
@@ -62,45 +70,12 @@
                 }
             }
             $('.chart_ready').data('easyPieChart').update(Math.random()*100);
-            $('.chart_assigned').data('easyPieChart').update(Math.random()*100);
-            $('.chart_fault').data('easyPieChart').update(Math.random()*100);
          });
     }
 
     $(function() {
-        $('.chart_ready').easyPieChart({
-            lineCap: 'butt',
-            lineWidth: 40,
-            trackWidth: 32,
-            trackColor: '#ace',
-            scaleColor: false,
-            size:280,
-            onStep: function (from, to, percent_1) {
-                this.el.children[0].innerHTML = Math.round(percent_1) + "%";
-            }
-        });
-        $('.chart_assigned').easyPieChart({
-            lineCap: 'butt',
-            lineWidth: 40,
-            trackWidth: 32,
-            trackColor: '#ace',
-            scaleColor: false,
-            size:280,
-            onStep: function (from, to, percent_1) {
-                this.el.children[0].innerHTML = Math.round(percent_1) + "%";
-            }
-        });
-        $('.chart_fault').easyPieChart({
-            lineCap: 'butt',
-            lineWidth: 40,
-            trackWidth: 32,
-            trackColor: '#ace',
-            scaleColor: false,
-            size:280,
-            onStep: function (from, to, percent_1) {
-                this.el.children[0].innerHTML = Math.round(percent_1) + "%";
-            }
-        });
+        $(".temperature_nozzle").knob();
+        $(".temperature_bed").knob();
     });
 
     $(window).ready(function () {
@@ -114,7 +89,6 @@
             }
             return address;
         }
-
         $('#online_machine_table').bootstrapTable({
             url:'/online-machines?cmd=machine_info',
             search:true,
@@ -126,13 +100,14 @@
             toolbar: '#toolbar',
             columns: [
             {
-                checkbox: true
+                checkbox: true,
+                align: 'center',
+                valign: 'middle'
             }, {
                 field: 'index',
                 title: 'index',
                 align: 'center',
-                halign: 'center',
-                valign: 'center',
+                valign: 'middle',
                 formatter: function (value, row, index) {
                     return index+1;
                 }
@@ -140,67 +115,77 @@
                 field: 'address',
                 title: 'address',
                 align: 'center',
-                halign: 'center'
+                valign: 'middle'
             }, {
                 field: 'type',
                 title: 'type',
                 align: 'center',
-                halign: 'center'
+                valign: 'middle'
             }, {
                 field: 'state',
                 title: 'state',
                 align: 'center',
-                halign: 'center'
+                valign: 'middle'
             }, {
                 field: 'task_info',
                 title: 'task',
-                align: 'center',
-                halign: 'center'
+                align: 'left',
+                valign: 'middle'
             }, {
                 field: 'temp_nozzle',
                 title: 'temp_nozzle',
                 align: 'center',
-                halign: 'center'
+                valign: 'middle'
             }, {
                 field: 'temp_bed',
                 title: 'temp_bed',
                 align: 'center',
-                halign: 'center'
+                valign: 'middle'
             }, {
                 field: 'x_size',
                 title: 'x',
                 align: 'center',
-                halign: 'center'
+                valign: 'middle'
             }, {
                 field: 'y_size',
                 title: 'y',
                 align: 'center',
-                halign: 'center'
+                valign: 'middle'
             }, {
                 field: 'z_size',
                 title: 'z',
                 align: 'center',
-                halign: 'center'
+                valign: 'middle'
             }, {
                 field: 'material',
                 title: 'material',
                 align: 'center',
-                halign: 'center'
+                valign: 'middle'
             }, {
                 field: 'material_color',
-                title: 'material_color',
+                title: 'color',
                 align: 'center',
-                halign: 'center'
+                valign: 'middle'
             }, {
                 field: 'nozzle_size',
                 title: 'nozzle',
                 align: 'center',
-                halign: 'center'
+                valign: 'middle'
             },{
                 field: 'worked_time',
                 title: 'worked_time',
                 align: 'center',
-                halign: 'center'
+                valign: 'middle'
+            }, {
+                field: 'operate',
+                title: 'operate',
+                align: 'center',
+                valign: 'middle',
+                formatter : function (value, row, index) {
+                    return '<a class="edit_machine" href="javascript:void(0)">' +
+                            '<i class="fa fa-pencil-square-o fa-lg" style="cursor: hand; cursor: pointer"></i></a>';
+                },
+                events: 'operateEvents'
             }],
             onRefresh: function () {
             }

@@ -1,0 +1,45 @@
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        Choose Machine
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <label>Machine</label>
+                    <select class="form-control" id="machine_type">
+                        <option>FDM</option>
+                    </select>
+                    <label style="margin-top: 20px">Material</label>
+                    <select class="form-control" id="machine_material">
+                        <option>PLA</option>
+                    </select>
+                    <label style="margin-top: 20px">Material Color</label>
+                    <select class="form-control" id="material_color">
+                        <option>white</option>
+                    </select>
+                    <label style="margin-top: 20px">TaskNum</label>
+                    <select class="form-control" id="task_num">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                        <option>6</option>
+
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消
+                    </button>
+                    <button id="upload_task" type="button" class="btn btn-primary">
+                        提交任务
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>

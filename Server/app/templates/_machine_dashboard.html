@@ -1,0 +1,38 @@
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <i class="fa fa-cogs fa-2x"></i>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        Machine Address
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <table>
+                        <tr style="text-align: center">
+                            <td style="padding: 40px">
+                                <h4>temperature_nozzle</h4>
+                                <input type="text" value="75" class="temperature_nozzle">
+                            </td>
+                            <td style="padding: 40px">
+                                <h4>temperature_bed</h4>
+                                <input type="text" value="75" class="temperature_bed">
+                            </td>
+                        </tr>
+                    </table>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                        cancel
+                    </button>
+                    <button id="upload_task" type="button" class="btn btn-primary">
+                        confirm
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>

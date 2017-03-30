@@ -810,7 +810,7 @@
                     column.checkbox || column.radio ?
                         sprintf(' class="bs-checkbox %s"', column['class'] || '') :
                         class_,
-                    sprintf(' style.css="%s"', halign + style),
+                    sprintf(' style="%s"', halign + style),
                     sprintf(' rowspan="%s"', column.rowspan),
                     sprintf(' colspan="%s"', column.colspan),
                     sprintf(' data-field="%s"', column.field),
@@ -1680,7 +1680,7 @@
                     return;
                 }
 
-                style = sprintf('style.css="%s"', csses.concat(that.header.styles[j]).join('; '));
+                style = sprintf('style="%s"', csses.concat(that.header.styles[j]).join('; '));
 
                 // handle td's id and class
                 if (item['_' + field + '_id']) {
@@ -1708,7 +1708,7 @@
                     for (var key in cellStyle.css) {
                         csses_.push(key + ': ' + cellStyle.css[key]);
                     }
-                    style = sprintf('style.css="%s"', csses_.concat(that.header.styles[j]).join('; '));
+                    style = sprintf('style="%s"', csses_.concat(that.header.styles[j]).join('; '));
                 }
 
                 value = calculateObjectValue(column,
@@ -2187,7 +2187,7 @@
                 }
             }
 
-            html.push('<td', class_, sprintf(' style.css="%s"', falign + valign + csses.concat().join('; ')), '>');
+            html.push('<td', class_, sprintf(' style="%s"', falign + valign + csses.concat().join('; ')), '>');
             html.push('<div class="th-inner">');
 
             html.push(calculateObjectValue(column, column.footerFormatter, [data], '&nbsp;') || '&nbsp;');

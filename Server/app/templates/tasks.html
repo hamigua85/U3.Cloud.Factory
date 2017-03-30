@@ -2,51 +2,7 @@
 
 {% block title %}UNITY 3D - Tasks{% endblock %}
 {% block page_content %}
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                        &times;
-                    </button>
-                    <h4 class="modal-title" id="myModalLabel">
-                        Choose Machine
-                    </h4>
-                </div>
-                <div class="modal-body">
-                    <label>Machine</label>
-                    <select class="form-control" id="machine_type">
-                        <option>FDM</option>
-                    </select>
-                    <label style="margin-top: 20px">Material</label>
-                    <select class="form-control" id="machine_material">
-                        <option>PLA</option>
-                    </select>
-                    <label style="margin-top: 20px">Material Color</label>
-                    <select class="form-control" id="material_color">
-                        <option>white</option>
-                    </select>
-                    <label style="margin-top: 20px">TaskNum</label>
-                    <select class="form-control" id="task_num">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
-                        <option>6</option>
-
-                    </select>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">取消
-                    </button>
-                    <button id="upload_task" type="button" class="btn btn-primary">
-                        提交任务
-                    </button>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal -->
-    </div>
+    {% include '_assign_task.html' %}
     <div class="page-header">
         {% if current_user.is_authenticated %}
             <div>
@@ -65,13 +21,13 @@
                                 <div class="btns">
                                     <div id="picker" style="float:left;">
                                         <i class="fa fa-cloud-upload"></i>
-                                        上传文件</div>
+                                        upload file</div>
                                     <button id="deleteBtn" class="btn btn btn-danger" style="float:left;">
                                         <i class="fa fa-remove"></i>
-                                        删除文件</button>
+                                        delete file</button>
                                     <button id="assigntaskBtn" class="btn btn btn-success" data-toggle="modal" data-target="#myModal" style="float:left; margin-left: 10px">
                                         <i class="fa fa-calendar"></i>
-                                        上传任务</button>
+                                        assign task</button>
                                 </div>
                             </div>
                         </div>
@@ -252,7 +208,7 @@
                 field: 'index',
                 title: 'index',
                 align: 'center',
-                halign: 'center',
+                valign: 'middle',
                 formatter: function (value, row, index) {
                     return index+1;
                 }
@@ -260,27 +216,27 @@
                 field: 'id',
                 title: 'id',
                 align: 'center',
-                halign: 'center'
+                valign: 'middle'
             }, {
                 field: 'name',
                 title: 'name',
                 align: 'center',
-                halign: 'center'
+                valign: 'middle'
             }, {
                 field: 'upload_time',
                 title: 'upload_time',
                 align: 'center',
-                halign: 'center'
+                valign: 'middle'
             }, {
                 field: 'size',
                 title: 'size',
                 align: 'center',
-                halign: 'center'
+                valign: 'middle'
             }, {
                 field: 'owner',
                 title: 'owner',
                 align: 'center',
-                halign: 'center'
+                valign: 'middle'
             }],
             onRefresh: function () {
             }
@@ -298,7 +254,7 @@
                 field: 'index',
                 title: 'index',
                 align: 'center',
-                halign: 'center',
+                valign: 'middle',
                 formatter: function (value, row, index) {
                     return index + 1;
                 }
@@ -306,42 +262,42 @@
                 field: 'id',
                 title: 'id',
                 align: 'center',
-                halign: 'center'
+                valign: 'middle'
             }, {
                 field: 'file_info',
                 title: 'file_info',
                 align: 'center',
-                halign: 'center'
+                valign: 'middle'
             }, {
                 field: 'machine_info',
                 title: 'machine_info',
                 align: 'center',
-                halign: 'center'
+                valign: 'middle'
             }, {
                 field: 'start',
                 title: 'start',
                 align: 'center',
-                halign: 'center'
+                valign: 'middle'
             }, {
                 field: 'end',
                 title: 'end',
                 align: 'center',
-                halign: 'center'
+                valign: 'middle'
             }, {
                 field: 'priority',
                 title: 'priority',
                 align: 'center',
-                halign: 'center'
+                valign: 'middle'
             }, {
                 field: 'progress',
                 title: 'progress',
                 align: 'center',
-                halign: 'center'
+                valign: 'middle'
             }, {
                 field: 'owner',
                 title: 'owner',
                 align: 'center',
-                halign: 'center'
+                valign: 'middle'
             }],
             onRefresh: function () {
 
@@ -363,7 +319,7 @@
                 field: 'index',
                 title: 'index',
                 align: 'center',
-                halign: 'center',
+                valign: 'middle',
                 formatter: function (value, row, index) {
                     return index + 1;
                 }
@@ -371,37 +327,37 @@
                 field: 'id',
                 title: 'id',
                 align: 'center',
-                halign: 'center'
+                valign: 'middle'
             }, {
                 field: 'file_info',
                 title: 'file_info',
                 align: 'center',
-                halign: 'center'
+                valign: 'middle'
             }, {
                 field: 'machine_info',
                 title: 'machine_info',
-                align: 'center',
-                halign: 'center'
+                align: 'left',
+                valign: 'middle'
             }, {
                 field: 'start',
                 title: 'start',
                 align: 'center',
-                halign: 'center'
+                valign: 'middle'
             }, {
                 field: 'state',
                 title: 'state',
                 align: 'center',
-                halign: 'center'
+                valign: 'middle'
             }, {
                 field: 'priority',
                 title: 'priority',
                 align: 'center',
-                halign: 'center'
+                valign: 'middle'
             }, {
                 field: 'owner',
                 title: 'owner',
                 align: 'center',
-                halign: 'center'
+                valign: 'middle'
             }],
             onRefresh: function () {
 
