@@ -197,8 +197,6 @@ def task():
 
 
 @main.route('/online-machines', methods=['GET', 'POST'])
-@login_required
-@admin_required
 def online_machines():
     if request.method == 'GET':
         cmd = request.args.get('cmd')
