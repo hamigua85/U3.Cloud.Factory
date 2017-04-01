@@ -35,7 +35,7 @@ root = tree.getroot()
 app = Flask(__name__)
 
 current_machine = FDM(state=State.Initing)
-
+server_addr = ""
 
 def parse_temperature(line):
     if 'ok' in line and 'T' in line and 'B' in line and 'T0' in line:
@@ -55,6 +55,7 @@ def init_printer(machine_config):
             # read config file init serialport
             serial_to_usb = machine_config.find('serialport').text
             baudrate = machine_config.find('baudrate').text
+            server_addr = machine_config.find('server').text
 
             # read config file init machine state
             if machine_config.find('state').text is not None:
@@ -199,7 +200,7 @@ def send_machine_state():
     try:
         print str(time.time())
         print info
-        r = requests.post("http://192.168.0.99:5000/online_machine_state", data=json.dumps(info), timeout=5)
+        r = requests.post("http://{0}/online_machine_state".format(server_addr), data=json.dumps(info), timeout=5)
     except Exception, e:
         print e
     finally:
