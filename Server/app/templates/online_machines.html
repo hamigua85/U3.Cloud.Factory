@@ -38,54 +38,87 @@
 
 {% block scripts %}
     {{ super() }}
-    <script src="{{ url_for('static', filename='jquery.easypiechart.js') }}"></script>
     <script src="{{ url_for('static', filename='bootstrap-table.js') }}"></script>
     <script src="{{ url_for('static', filename='jQuery-Knob/dist/jquery.knob.min.js') }}"></script>
 	<script>
+    var address = '';
+    var flag = false;
     window.operateEvents = {
         'click .edit_machine': function (e, value, row, index) {
+            address = row['address'];
             $('#myModalLabel').text("Machine Address-" + row['address']);
             $('#myModal').modal('show');
+
             //alert('You click like icon, row: ' + JSON.stringify(row));
         }
     };
     function myInterval(){
         $.getJSON("/online-machines", { cmd: 'machine_info'},
         function (data) { 
-            $('#table').bootstrapTable('load', data);
-            var total_machines = 0;
-            var ready_machines = 0;
-            var assigned_machines = 0;
-            var fault_machines = 0;
-            total_machines = data.length;
-            for(var i = 0;i<data.length;i++){
-                if(data[i]['state'] == 'ready'){
-                    ready_machines++;
-                }
-                else if(data[i]['state'] == 'assigned'){
-                    assigned_machines++;
-                }
-                else {
-                    fault_machines++;
-                }
-            }
-            $('.chart_ready').data('easyPieChart').update(Math.random()*100);
+            $('#online_machine_table').bootstrapTable('load', data);
+            $(".temperature_nozzle").knob();
          });
     }
-
+    $('#myModal').on('shown.bs.modal', function (e) {
+        flag = true;
+    })
+    $('#myModal').on('hidden.bs.modal', function (e) {
+        flag = false;
+    })
+    function machine_dashboard_Interval(){
+        if(flag == true){
+            $.getJSON("/online-machines", { cmd: 'machine_info'},
+            function (data) { 
+                for(var i = 0;i<data.length;i++){
+                    if(data[i]['address'] == address){
+                        $(".temperature_nozzle").val(parseInt(data[i]["temp_nozzle"])).trigger("change");
+                        $(".temperature_bed").val(parseInt(data[i]["temp_bed"])).trigger("change");
+                    }
+                }
+             });
+        }
+    }
     $(function() {
+        $(".set_temperature_nozzle").knob({
+            change : function (value) {
+                        console.log("change : " + value);
+                        $.getJSON("/set_online_machine_state", { address:address, cmd : 'M104 S' + parseInt(value)},
+                        function (data) { 
+                         });
+                    }
+        });
         $(".temperature_nozzle").knob();
-        $(".temperature_bed").knob();
+
+        $(".set_bed_temperature").knob({
+            change : function (value) {
+                        console.log("change : " + value);
+                        $.getJSON("/set_online_machine_state", { address:address, cmd : 'M140 S' + parseInt(value)},
+                        function (data) { 
+                         });
+                    }
+        });;
+        $(".bed_temperature").knob();
+
+        $(".set_printer_speed").knob({
+            change : function (value) {
+                        console.log("change : " + value);
+                        $.getJSON("/set_online_machine_state", { address:address, cmd : 'M220 S' + parseInt(value)},
+                        function (data) { 
+                         });
+                    }
+        });;
+        $(".printer_speed").knob();
     });
 
     $(window).ready(function () {
         setInterval("myInterval()", 5000);
+        setInterval("machine_dashboard_Interval()", 1000);
 
         function getSelectionMahineAddrs() {
             var addrs =  $('#online_machine_table').bootstrapTable('getAllSelections');
             var address = []
-            for(var i =0;i<addrs.length - 1;i++){
-                address.append(addrs[i]['address']);
+            for(var i =0;i<addrs.length;i++){
+                address.push(addrs[i]['address']);
             }
             return address;
         }
@@ -189,6 +222,21 @@
             }],
             onRefresh: function () {
             }
+        });
+
+        $("#initBtn").click(function () {
+            address = getSelectionMahineAddrs();
+            $.ajax({
+                type: "POST",
+                url: "/init_online_machine",
+                dataType: 'json',
+                data: JSON.stringify(address),
+                contentType: 'application/json; charset=UTF-8',
+                traditional: true,
+                success: function(){
+
+                }
+            });
         });
         })
 	</script>

@@ -214,3 +214,15 @@ def online_machine_state():
         update_online_machine_state(request)
         return jsonify()
 
+
+@main.route('/set_online_machine_state', methods=['GET'])
+def set_online_machine_state():
+    requests.post("http://{0}:5001/send-cmd?cmd={1}".format(request.args['address'], request.args['cmd']), timeout=5)
+    return jsonify()
+
+
+@main.route('/init_online_machine', methods=['POST'])
+def init_online_machine():
+    for addr in request.get_json():
+        requests.post("http://{0}:5001/init".format(addr), timeout=5)
+    return jsonify()

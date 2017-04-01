@@ -2,28 +2,97 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <i class="fa fa-cogs fa-2x"></i>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                         &times;
                     </button>
-                    <h4 class="modal-title" id="myModalLabel">
-                        Machine Address
-                    </h4>
+                    <div class="modal-title" >
+                        <h4 id="myModalLabel"></h4>
+                    </div>
                 </div>
                 <div class="modal-body">
-                    <table>
-                        <tr style="text-align: center">
-                            <td style="padding: 40px">
-                                <h4>temperature_nozzle</h4>
-                                <input type="text" value="75" class="temperature_nozzle">
-                            </td>
-                            <td style="padding: 40px">
-                                <h4>temperature_bed</h4>
-                                <input type="text" value="75" class="temperature_bed">
-                            </td>
-                        </tr>
-                    </table>
-
+                    <div style="text-align: center; display: table-cell">
+                        <div class="temp_nozzle" style="float: left; padding: 40px">
+                            <h4 style="font-weight: 900">
+                                <i class="fa fa-free-code-camp"></i>
+                                Temp Nozzle(℃)
+                            </h4>
+                            <div>
+                                <div>
+                                    <input class="set_temperature_nozzle" data-min="0" data-max="250" value="10" data-cursor=false
+                                               data-displayInput=true data-width="200" data-height="200"
+                                               data-thickness=".3" data-displayPrevious = true>
+                                </div>
+                                <div style="margin-top: -173px">
+                                    <input class="temperature_nozzle" data-min="0" data-max="250" value="0" data-displayInput=false
+                                               data-width="136" data-height="136" data-thickness=".1" readOnly = true
+                                               data-fgColor = "#ff0000">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="speed" style="float: left; padding: 40px">
+                            <h4 style="font-weight: 900">
+                                <i class="fa fa-rocket"></i>
+                                Speed(%)
+                            </h4>
+                            <div>
+                                <div>
+                                    <input class="set_printer_speed" data-min="0" data-max="200" value="100" data-cursor=false
+                                               data-displayInput=true data-width="200" data-height="200"
+                                               data-thickness=".3" data-displayPrevious = true>
+                                </div>
+                                <div style="margin-top: -173px">
+                                    <input class="printer_speed" data-min="0" data-max="200" value="0" data-displayInput=false
+                                               data-width="136" data-height="136" data-thickness=".1" readOnly = true
+                                               data-fgColor = "#ff0000">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bed_temp" style="float: left; padding: 40px">
+                            <h4 style="font-weight: 900">
+                                <i class="fa fa-free-code-camp"></i>
+                                Temp Bed(℃)
+                            </h4>
+                            <div>
+                                <div>
+                                    <input class="set_bed_temperature" data-min="0" data-max="100" value="10" data-cursor=false
+                                               data-displayInput=true data-width="200" data-height="200"
+                                               data-thickness=".3" data-displayPrevious = true>
+                                </div>
+                                <div style="margin-top: -173px">
+                                    <input class="bed_temperature" data-min="0" data-max="100" value="0" data-displayInput=false
+                                               data-width="136" data-height="136" data-thickness=".1" readOnly = true
+                                               data-fgColor = "#ff0000">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div><hr></div>
+                    <div style="padding: 30px; text-align: center">
+                        <button class="btn btn-primary btn-lg" style="margin-top: 10px;">
+                            <i class="fa fa-home"></i>
+                            Home
+                        </button>
+                        <button class="btn btn-info btn-lg" style=" margin-left: 20px;margin-top: 10px; width: 104px">
+                            <i class="fa fa-arrow-circle-o-up"></i>
+                            UP
+                        </button>
+                        <button class="btn btn-info btn-lg" style="margin-left: 20px;margin-top: 10px;width: 104px">
+                            <i class="fa fa-arrow-circle-o-down"></i>
+                            DOWN
+                        </button>
+                        <button class="btn btn-info btn-lg" style="margin-left: 20px;margin-top: 10px;width: 104px">
+                            <i class="fa fa-arrow-circle-o-left"></i>
+                            LEFT
+                        </button>
+                        <button class="btn btn-info btn-lg" style="margin-left: 20px;margin-top: 10px;width: 104px">
+                            <i class="fa fa-arrow-circle-o-right"></i>
+                            RIGHT
+                        </button>
+                        <button class="btn btn-danger btn-lg" style="margin-left: 20px;margin-top: 10px;width: 104px">
+                            <i class="fa fa-repeat"></i>
+                            Reboot
+                        </button>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">

@@ -37,22 +37,51 @@
 <script src="{{ url_for('static', filename='jqvmap/dist/maps/jquery.vmap.world.js') }}"></script>
 <script src="{{ url_for('static', filename='jqvmap/examples/js/jquery.vmap.sampledata.js') }}"></script>
 <script>
+    var machine_info = []
+    function myInterval(){
+        $.getJSON("/online-machines", { cmd: 'machine_info'},
+        function (data) { 
+            var ready_machines = 0;
+            var assigned_machines = 0;
+            var done = 0;
+            var fault_machines = 0;
+            for(var i = 0;i<data.length;i++){
+                if(data[i]['state'] == 'ready'){
+                    ready_machines++;
+                }
+                else if(data[i]['state'] == 'assigned'){
+                    assigned_machines++;
+                }
+                else if(data[i]['state'] == 'done'){
+                    done++;
+                }
+                else {
+                    fault_machines++;
+                }
+            }
+            machine_info[0] = ready_machines;
+            machine_info[1] = assigned_machines;
+            machine_info[2] = done;
+            machine_info[3] = fault_machines;
+            if(data.length==0){
+                machine_info[0] = 4;
+                machine_info[1] = 2;
+                machine_info[2] = 3;
+                machine_info[3] = 1;
+            }
+            piechart_online_machines.update();
 
-    jQuery(document).ready(function () {
-    var randomScalingFactor = function() {
-            return Math.round(Math.random() * 100);
-        };
+         });
+    }
+    $(window).ready(function () {
+        setInterval("myInterval()", 1000);
+    });
 
     var config = {
         type: 'pie',
         data: {
             datasets: [{
-                data: [
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                ],
+                data: machine_info,
                 backgroundColor: [
                     window.chartColors.yellow,
                     window.chartColors.blue,
@@ -106,7 +135,6 @@
         normalizeFunction: 'polynomial',
         pins: pins,
         pinMode: 'content'
-    });
     });
     $("#heartbeat").css({"-webkit-animation":"twinkling 1s infinite ease-in-out"});
 </script>
