@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import os, sys
-sys.path.append("/Volumes/OS_Application/Flask/U3/U3.Cloud.Factory")
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from app import create_app, db
 from Common.models import User, Role, Post, Task
 from flask_script import Manager, Shell
