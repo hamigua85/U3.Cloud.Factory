@@ -97,6 +97,7 @@ def init():
         current_machine.state = State.Ready
         printer.disconnect()
         init_printer(root)
+        time.sleep(1)
         printer.send_now("G28")
         return jsonify()
     except Exception, e:
