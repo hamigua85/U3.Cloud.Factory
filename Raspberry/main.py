@@ -50,6 +50,7 @@ def updata_config(name, value):
 
 def init_printer(machine_config):
     global printer
+    global server_addr
     for index in range(0, 3):
         try:
             # read config file init serialport
@@ -196,6 +197,7 @@ def get_machine_state():
 
 
 def send_machine_state():
+    global server_addr
     info = get_machine_state()
     try:
         print str(time.time())
