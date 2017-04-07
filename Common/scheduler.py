@@ -10,7 +10,8 @@ online_machines_redis = Redis()
 
 
 def update_online_machine_state(request):
-    online_machines_redis.set('{0}'.format(request.headers.environ['REMOTE_ADDR']), request.data, 7)
+    data = json.loads(request.data)
+    online_machines_redis.set(data["address"], request.data, 7)
 
 
 def get_online_machines(state=None):
