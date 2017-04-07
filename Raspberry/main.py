@@ -198,18 +198,19 @@ def get_machine_state():
 
 
 def send_machine_state():
-    global server_addr
-    info = get_machine_state()
-    try:
-        print str(time.time())
-        print info
-        r = requests.post("http://{0}/online_machine_state".format(server_addr), data=json.dumps(info), timeout=5)
-    except Exception, e:
-        print e
-    finally:
-        t = Timer(5, send_machine_state)
-        t.start()
-        pass
+    with app.app_context():
+        global server_addr
+        info = get_machine_state()
+        try:
+            print str(time.time())
+            print info
+            r = requests.post("http://{0}/online_machine_state".format(server_addr), data=json.dumps(info), timeout=5)
+        except Exception, e:
+            print e
+        finally:
+            pass
+    t = Timer(5, send_machine_state)
+    t.start()
 
 
 if __name__ == "__main__":
