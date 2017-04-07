@@ -72,11 +72,11 @@
 {% endblock %}
 
 {% block scripts %}
-    {{ super() }}
     <script src="{{ url_for('static', filename='jquery-2.0.3.min.js') }}"></script>
+    {{ super() }}
     <script src="{{ url_for('static', filename='bootstrap-table.js') }}"></script>
     <script src="{{ url_for('static', filename='webuploader-0.1.5/webuploader.js') }}"></script>
-	<script>
+	<script type="text/javascript">
     function myInterval(){
         $.getJSON("/tasks-info", { cmd: 'task_info'},
         function (data) { 
@@ -179,16 +179,24 @@
         $("#upload_task").click(function () {
             var files_id;
             var machine_info;
+            $("#upload_task").attr('disabled',true);
+            $("#myModal").modal('hide');
             try {
                 files_id = getSelectionsFileId();
                 machine_info = getMachineInfo();
+
                 $.getJSON("/add-tasks", { files : files_id, machine_info : machine_info},
                 function (data) { 
+                    $("#upload_task").attr('disabled',false);
+                    $("#myModal").modal('hide');
                     var i = data;
+
                  });
             }
             catch(err) {
                 alert(err)
+                $("#upload_task").attr('disabled',false);
+                $("#myModal").modal('hide');
             }
         });
 
