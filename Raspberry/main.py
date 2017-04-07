@@ -197,8 +197,8 @@ def get_machine_state():
     return current_machine.__dict__
 
 
-def send_machine_state(application):
-    with application.app_context():
+def send_machine_state():
+    with app.app_context():
         global server_addr
         info = get_machine_state()
         try:
@@ -215,6 +215,6 @@ def send_machine_state(application):
 
 if __name__ == "__main__":
     init_printer(root)
-    scheduler = threading.Thread(target=send_machine_state, args=(app,))
+    scheduler = threading.Thread(target=send_machine_state)
     scheduler.start()
     app.run(host="0.0.0.0", port=5001, debug=False)
