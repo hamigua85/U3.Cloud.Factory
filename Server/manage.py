@@ -28,7 +28,9 @@ def test():
     tests = unittest.TestLoader().discover('tests')
     unittest.TextTestRunner(verbosity=2).run(tests)
 
+
+scheduler = threading.Thread(target=algorithm_one, args=(app,))
+scheduler.start()
+
 if __name__ == '__main__':
-    scheduler = threading.Thread(target=algorithm_one, args=(app,))
-    scheduler.start()
     manager.run()

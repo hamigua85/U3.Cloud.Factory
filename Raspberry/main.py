@@ -213,8 +213,9 @@ def send_machine_state():
     t.start()
 
 
+init_printer(root)
+scheduler = threading.Thread(target=send_machine_state)
+scheduler.start()
+
 if __name__ == "__main__":
-    init_printer(root)
-    scheduler = threading.Thread(target=send_machine_state)
-    scheduler.start()
     app.run(host="0.0.0.0", port=5001, debug=False)
